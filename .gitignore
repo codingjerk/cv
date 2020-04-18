@@ -2,6 +2,7 @@
 *.aux
 *.log
 *.tex
+*.out
 
 # Build results
 *.pdf
