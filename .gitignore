@@ -1,6 +1,7 @@
 # LaTeX temp files
 *.aux
 *.log
+*.tex
 
 # Build results
 *.pdf
