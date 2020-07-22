@@ -33,6 +33,13 @@ class EducationPlace(NamedTuple):
     then: DateInterval
 
 
+class WorkingPlace(NamedTuple):
+    place: str
+    position: str
+    then: DateInterval
+    achivements: List[str]
+
+
 class LanguageLevel(Enum):
     Beginner = auto()
     Intermediate = auto()
@@ -52,6 +59,7 @@ class Applicant(NamedTuple):
     contacts: Contacts
     address: Address
     education: List[EducationPlace]
+    experience: List[WorkingPlace]
     languages: List[Language]
     skills: List[str]
 
@@ -84,6 +92,7 @@ me = Applicant(
         city="Moscow",
     ),
     education=[],
+    experience=[],
     languages=[
         Language("Russian", LanguageLevel.Native),
         Language("English", LanguageLevel.Intermediate),
