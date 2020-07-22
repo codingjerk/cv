@@ -3,6 +3,14 @@ from enum import Enum, auto
 from datetime import date
 
 
+class Contacts(NamedTuple):
+    email: str
+    phone: str
+    github: str
+    gitlab: str
+    skype: str
+
+
 class EducationLevel(Enum):
     # TODO
     TODO = auto()
@@ -36,6 +44,7 @@ class Language(NamedTuple):
 class Applicant(NamedTuple):
     name: str
     birthdate: date
+    contacts: Contacts
     education: List[EducationPlace]
     languages: List[Language]
     skills: List[str]
@@ -57,6 +66,13 @@ class Resume(NamedTuple):
 me = Applicant(
     name="Denis Gruzdev",
     birthdate=date(1993, 7, 31),
+    contacts=Contacts(
+        email="codingjerk@gmail.com",
+        phone="+79999767890",
+        github="codingjerk",
+        gitlab="codingjerk",
+        skype="live:codingjerk",
+    ),
     education=[],
     languages=[
         Language("Russian", LanguageLevel.Native),
