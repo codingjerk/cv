@@ -11,6 +11,11 @@ class Contacts(NamedTuple):
     skype: str
 
 
+class Address(NamedTuple):
+    country: str
+    city: str
+
+
 class EducationLevel(Enum):
     # TODO
     TODO = auto()
@@ -45,6 +50,7 @@ class Applicant(NamedTuple):
     name: str
     birthdate: date
     contacts: Contacts
+    address: Address
     education: List[EducationPlace]
     languages: List[Language]
     skills: List[str]
@@ -72,6 +78,10 @@ me = Applicant(
         github="codingjerk",
         gitlab="codingjerk",
         skype="live:codingjerk",
+    ),
+    address=Address(
+        country="Russia",
+        city="Moscow",
     ),
     education=[],
     languages=[
