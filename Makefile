@@ -1,8 +1,8 @@
 build:
 	@echo "[ === Build === ]"
-	@j2 main.j2 > main.tex
+	@python3 main.py > main.tex
 	@xelatex -halt-on-error -file-line-error main.tex | (! grep -i ".*:[0-9]*:.*\|warning")
 
 watch:
 	@echo "[ === Watch === ]"
-	@sh -c "while inotifywait --quiet --event modify main.j2; do make --silent build; done"
+	@sh -c "while inotifywait --quiet --event modify main.py; do make --silent build; done"
