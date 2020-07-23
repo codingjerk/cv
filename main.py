@@ -18,7 +18,9 @@ class Address(NamedTuple):
 
 class EducationLevel(Enum):
     # TODO
-    TODO = auto()
+    TVET = auto()  # Technical and Vocational Education and Training
+    BachelorsDegree = auto()
+    MastersDegree = auto()
 
 
 class DateInterval(NamedTuple):
