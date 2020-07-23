@@ -23,22 +23,27 @@ class EducationLevel(Enum):
     MastersDegree = auto()
 
 
-class DateInterval(NamedTuple):
-    date_from: date
-    date_to: date
+class Month(NamedTuple):
+    year: int
+    month: int
+
+
+class MonthInterval(NamedTuple):
+    month_from: Month
+    month_to: Month
 
 
 class EducationPlace(NamedTuple):
     place: str
     speciality: str
     level: EducationLevel
-    then: DateInterval
+    then: MonthInterval
 
 
 class WorkingPlace(NamedTuple):
     place: str
     position: str
-    then: DateInterval
+    then: MonthInterval
     achivements: List[str]
 
 
