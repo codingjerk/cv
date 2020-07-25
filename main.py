@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from enum import Enum, auto
 from io import StringIO
 from textwrap import dedent
@@ -12,6 +12,15 @@ class Contacts(NamedTuple):
     gitlab: str
     skype: str
     web: str
+
+    def beauty_phone(self) -> str:
+        p1 = self.phone[0]
+        p2 = self.phone[1:4]
+        p3 = self.phone[4:7]
+        p4 = self.phone[7:9]
+        p5 = self.phone[9:11]
+
+        return f"+{p1} ({p2}) {p3}-{p4}-{p5}"
 
 
 class Address(NamedTuple):
@@ -99,6 +108,9 @@ class Applicant(NamedTuple):
     hobbies: List[str]
     wishes: List[str]
 
+    def age(self, at: date) -> int:
+        return years_between(self.birthdate, at)
+
 
 class Position(NamedTuple):
     name: str
@@ -110,23 +122,99 @@ class Resume(NamedTuple):
     position: Position
 
     def to_latex(self) -> str:
-        result = StringIO()
-
-        result.write(d(r"""
-            \documentclass[11pt, a4paper]{minimal}
-            \usepackage[english,russian]{babel}
-            \begin{document}
-                Resume here
-            \end{document}
-        """))
-
-        return result.getvalue()
+        generator = LatexGeneartor(self)
+        return generator.generate()
 
 
 def d(text: str) -> str:
     """ Dedents text and removes unnecessary newlines """
 
     return dedent(text).strip()
+
+
+def is_date_before(test_date, point_date):
+    if test_date.month < point_date.month:
+        return True
+
+    if test_date.month > point_date.month:
+        return False
+
+    return test_date.day < point_date.day
+
+
+def years_between(from_date: date, to_date: date) -> int:
+    rough_difference = to_date.year - from_date.year
+
+    if is_date_before(to_date, from_date):
+        return rough_difference - 1
+
+    return rough_difference
+
+
+class LatexGeneartor():
+    def __init__(self, resume: Resume) -> None:
+        self.resume = resume
+        self.stream = StringIO()
+
+    def write(self, text: str) -> None:
+        self.stream.write(text)
+
+    def write_line(self, line: str) -> None:
+        self.write(line + "\n")
+
+    def write_latex_header(self) -> None:
+        self.write(d(r"""
+            \documentclass[11pt, a4paper]{minimal}
+            \usepackage[english,russian]{babel}
+        """))
+
+    def write_age(self) -> None:
+        now = datetime.now().date()
+        age = self.resume.applicant.age(at=now)
+        self.write_line(f"{age} years old")
+
+    def write_phone(self) -> None:
+        self.write_line(r"\href{tel:%s}{%s}" % (
+            self.resume.applicant.contacts.phone,
+            self.resume.applicant.contacts.beauty_phone(),
+        ))
+
+    def write_link_with_icon(self, url: str, icon: str, text: str) -> None:
+        self.write(r"\href{%s}{\faicon{%s} %s}" % (url, icon, text))
+
+    def write_github(self) -> None:
+        username = self.resume.applicant.contacts.github
+        self.write_link_with_icon(
+            url=f"https://github.com/{username}",
+            icon="github",
+            text=username,
+        )
+
+    def write_contacts(self) -> None:
+        self.write_phone()
+        self.write_line(self.resume.applicant.contacts.email)
+        self.write_github()
+
+    def write_header(self) -> None:
+        self.write_line(self.resume.applicant.name)
+        self.write_line(self.resume.position.name)
+        self.write_age()
+        self.write_line(self.resume.applicant.address.country)
+        self.write_contacts()
+
+    def write_content(self) -> None:
+        self.write_header()
+
+    def write_document(self) -> None:
+        self.write_line(r"\begin{document}")
+        self.write_content()
+        self.write_line(r"\end{document}")
+
+    def generate(self) -> str:
+        self.write_latex_header()
+        self.write_document()
+
+        return self.stream.getvalue()
 
 
 me = Applicant(
@@ -360,19 +448,6 @@ python_developer = Position(
         "Git",
         "Automated Testing",
         "Continious Integration",
-    # ], [
-    #     "Flask",
-    #     "Bottle",
-    #     "Pandas",
-    #     "Numpy",
-    #     "Selenium",
-    #     "Squish",
-    # ], [
-    #     "C++",
-    #     "Bash",
-    #     "JavaScript",
-    # ], [
-    #     "Data Structures and Algorithms",
     ]],
 )
 
