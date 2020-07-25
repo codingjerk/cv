@@ -11,6 +11,7 @@ class Contacts(NamedTuple):
     github: str
     gitlab: str
     skype: str
+    linkedin: str
     web: str
 
     def beauty_phone(self) -> str:
@@ -231,6 +232,7 @@ me = Applicant(
         github="codingjerk",
         gitlab="codingjerk",
         skype="live:codingjerk",
+        linkedin="codingjerk",
         web="codingjerk.dev",
     ),
     address=Address(
