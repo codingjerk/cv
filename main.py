@@ -11,6 +11,7 @@ class Contacts(NamedTuple):
     github: str
     gitlab: str
     skype: str
+    web: str
 
 
 class Address(NamedTuple):
@@ -95,6 +96,7 @@ me = Applicant(
         github="codingjerk",
         gitlab="codingjerk",
         skype="live:codingjerk",
+        web="codingjerk.dev",
     ),
     address=Address(
         country="Russia",
