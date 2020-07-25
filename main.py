@@ -1,6 +1,8 @@
-from typing import NamedTuple, List
-from enum import Enum, auto
 from datetime import date
+from enum import Enum, auto
+from io import StringIO
+from textwrap import dedent
+from typing import List, NamedTuple, Optional
 
 
 class Contacts(NamedTuple):
