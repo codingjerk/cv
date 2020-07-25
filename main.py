@@ -180,6 +180,9 @@ class LatexGeneartor():
             self.resume.applicant.contacts.beauty_phone(),
         ))
 
+    def write_email(self) -> None:
+        self.write_line(self.resume.applicant.contacts.email)
+
     def write_link_with_icon(self, url: str, icon: str, text: str) -> None:
         self.write(r"\href{%s}{\faicon{%s} %s}" % (url, icon, text))
 
@@ -191,10 +194,19 @@ class LatexGeneartor():
             text=username,
         )
 
+    def write_gitlab(self) -> None:
+        username = self.resume.applicant.contacts.gitlab
+        self.write_link_with_icon(
+            url=f"https://gitlab.com/{username}",
+            icon="gitlab",
+            text=username,
+        )
+
     def write_contacts(self) -> None:
         self.write_phone()
-        self.write_line(self.resume.applicant.contacts.email)
+        self.write_email()
         self.write_github()
+        self.write_gitlab()
 
     def write_header(self) -> None:
         self.write_line(self.resume.applicant.name)
