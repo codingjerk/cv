@@ -183,8 +183,14 @@ class LatexGeneartor():
     def write_email(self) -> None:
         self.write_line(self.resume.applicant.contacts.email)
 
+    def write_text_with_icon(self, icon: str, text: str) -> None:
+        self.write(r"\faicon{%s} %s" % (icon, text))
+
     def write_link_with_icon(self, url: str, icon: str, text: str) -> None:
-        self.write(r"\href{%s}{\faicon{%s} %s}" % (url, icon, text))
+        self.write(r"\href{%s}" % url)
+        self.write("{")
+        self.write_text_with_icon(icon, text)
+        self.write("}")
 
     def write_github(self) -> None:
         username = self.resume.applicant.contacts.github
@@ -202,11 +208,34 @@ class LatexGeneartor():
             text=username,
         )
 
+    def write_skype(self) -> None:
+        self.write_text_with_icon(
+            icon="skype",
+            text=self.resume.applicant.contacts.skype,
+        )
+
+    def write_linkedin(self) -> None:
+        self.write_text_with_icon(
+            icon="linkedin",
+            text=self.resume.applicant.contacts.linkedin,
+        )
+
+    def write_web(self) -> None:
+        site = self.resume.applicant.contacts.web
+        self.write_link_with_icon(
+            url=f"https://{site}",
+            icon="web",
+            text=site,
+        )
+
     def write_contacts(self) -> None:
         self.write_phone()
         self.write_email()
         self.write_github()
         self.write_gitlab()
+        self.write_skype()
+        self.write_linkedin()
+        self.write_web()
 
     def write_header(self) -> None:
         self.write_line(self.resume.applicant.name)
