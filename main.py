@@ -167,6 +167,8 @@ class LatexGeneartor():
         self.write(d(r"""
             \documentclass[11pt, a4paper]{minimal}
             \usepackage[english,russian]{babel}
+            \usepackage{hyperref}
+            \usepackage{fontawesome}
         """))
 
     def write_age(self) -> None:
@@ -175,13 +177,17 @@ class LatexGeneartor():
         self.write_line(f"{age} years old")
 
     def write_phone(self) -> None:
-        self.write_line(r"\href{tel:%s}{%s}" % (
-            self.resume.applicant.contacts.phone,
-            self.resume.applicant.contacts.beauty_phone(),
-        ))
+        self.write_link_with_icon(
+            url=f"tel:{self.resume.applicant.contacts.phone}",
+            icon="phone",
+            text=self.resume.applicant.contacts.beauty_phone(),
+        )
 
     def write_email(self) -> None:
-        self.write_line(self.resume.applicant.contacts.email)
+        self.write_text_with_icon(
+            icon="envelope",
+            text=self.resume.applicant.contacts.email,
+        )
 
     def write_text_with_icon(self, icon: str, text: str) -> None:
         self.write(r"\faicon{%s} %s" % (icon, text))
@@ -224,17 +230,23 @@ class LatexGeneartor():
         site = self.resume.applicant.contacts.web
         self.write_link_with_icon(
             url=f"https://{site}",
-            icon="web",
+            icon="globe",
             text=site,
         )
 
     def write_contacts(self) -> None:
         self.write_phone()
+        self.write(" | ")
         self.write_email()
+        self.write(" | ")
         self.write_github()
+        self.write(" | ")
         self.write_gitlab()
+        self.write(" | ")
         self.write_skype()
+        self.write(" | ")
         self.write_linkedin()
+        self.write(" | ")
         self.write_web()
 
     def write_header(self) -> None:
