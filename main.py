@@ -30,7 +30,6 @@ class Address(NamedTuple):
 
 
 class EducationLevel(Enum):
-    # TODO
     TVET = auto()  # Technical and Vocational Education and Training
     BachelorsDegree = auto()
     MastersDegree = auto()
@@ -190,7 +189,7 @@ class LatexGeneartor():
         )
 
     def write_text_with_icon(self, icon: str, text: str) -> None:
-        self.write(r"\faicon{%s} %s" % (icon, text))
+        self.write(r"\faicon{%s}~%s" % (icon, text))
 
     def write_link_with_icon(self, url: str, icon: str, text: str) -> None:
         self.write(r"\href{%s}" % url)
@@ -251,13 +250,36 @@ class LatexGeneartor():
 
     def write_header(self) -> None:
         self.write_line(self.resume.applicant.name)
+        self.write_line("")
         self.write_line(self.resume.position.name)
+        self.write_line("")
         self.write_age()
+        self.write_line("")
         self.write_line(self.resume.applicant.address.country)
+        self.write_line("")
         self.write_contacts()
+
+    def write_skill(self, skill: str) -> None:
+        self.write_line(fr"\item {skill}")
+
+    def write_all_skills(self) -> None:
+        self.write_line(r"\begin{itemize}")
+
+        for skill in self.resume.applicant.skills:
+            self.write_skill(skill)
+
+        for skill_group in self.resume.position.skills:
+            for skill in skill_group:
+                self.write_skill(skill)
+
+        self.write_line(r"\end{itemize}")
 
     def write_content(self) -> None:
         self.write_header()
+        self.write_all_skills()
+        # self.write_languages()
+        # self.write_experince()
+        # self.write_education()
 
     def write_document(self) -> None:
         self.write_line(r"\begin{document}")
