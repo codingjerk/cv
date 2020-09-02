@@ -122,7 +122,7 @@ class Resume(NamedTuple):
     position: Position
 
     def to_latex(self) -> str:
-        generator = LatexGeneartor(self)
+        generator = LatexGenerator(self)
         return generator.generate()
 
 
@@ -151,7 +151,7 @@ def years_between(from_date: date, to_date: date) -> int:
     return rough_difference
 
 
-class LatexGeneartor():
+class LatexGenerator():
     def __init__(self, resume: Resume) -> None:
         self.resume = resume
         self.stream = StringIO()
