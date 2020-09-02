@@ -132,7 +132,7 @@ def d(text: str) -> str:
     return dedent(text).strip()
 
 
-def is_date_before(test_date, point_date):
+def is_date_before(test_date: date, point_date: date) -> bool:
     if test_date.month < point_date.month:
         return True
 
