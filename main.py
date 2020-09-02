@@ -165,6 +165,7 @@ class LatexGeneartor():
     def write_latex_header(self) -> None:
         self.write(d(r"""
             \documentclass[11pt, a4paper]{minimal}
+            \usepackage[papersize={8.5in,11in}]{geometry}
             \usepackage[english,russian]{babel}
             \usepackage{hyperref}
             \usepackage{fontawesome}
