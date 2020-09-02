@@ -1,3 +1,6 @@
+all: test build watch
+
+
 build:
 	@echo "[ === Build === ]"
 	@python3 main.py > main.tex
