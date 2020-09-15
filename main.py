@@ -277,11 +277,45 @@ class LatexGenerator():
 
         self.write_line(r"\end{itemize}")
 
+    def write_language(self, language: Language) -> None:
+        name = language.name
+        level = {
+            LanguageLevel.Intermediate: "Intermediate",
+            LanguageLevel.Advanced: "Advanced",
+            LanguageLevel.Fluent: "Fluent",
+            LanguageLevel.Native: "Native",
+        }[language.level]
+
+        self.write_line(f"{name} ({level})")
+
+    def write_all_languages(self) -> None:
+        for language in self.resume.applicant.languages:
+            if language.level == LanguageLevel.Beginner:
+                continue
+
+            self.write_language(language)
+
+    def write_working_place(self, working_place: WorkingPlace) -> None:
+        self.write(f"""
+            {working_place.position} ({working_place.place})
+        """)
+        self.write("\n\n")
+
+        self.write_line(working_place.description)
+
+        self.write_line("Achivements:")
+        for achivement in working_place.achivements:
+            self.write_line(achivement)
+
+    def write_all_working_places(self) -> None:
+        for working_place in self.resume.applicant.experience:
+            self.write_working_place(working_place)
+
     def write_content(self) -> None:
         self.write_header()
         self.write_all_skills()
-        # self.write_languages()
-        # self.write_experince()
+        self.write_all_languages()
+        self.write_all_working_places()
         # self.write_education()
 
     def write_document(self) -> None:
