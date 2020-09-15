@@ -168,6 +168,8 @@ class LatexGenerator():
             \usepackage[papersize={8.5in,11in}]{geometry}
             \usepackage[english,russian]{babel}
             \usepackage{hyperref}
+            \usepackage{fontspec}
+            \defaultfontfeatures{Extension = .otf}% adds .otf to end of path when font loaded without ext parameter e.g. \newfontfamily{\FA}{FontAwesome} > \newfontfamily{\FA}{FontAwesome.otf}
             \usepackage{fontawesome}
         """))
 
