@@ -164,7 +164,7 @@ class LatexGenerator():
 
     def write_latex_header(self) -> None:
         self.write(d(r"""
-            \documentclass[11pt, a4paper]{minimal}
+            \documentclass[11pt, a4paper]{article}
             \usepackage[papersize={8.5in,11in}]{geometry}
             \usepackage[english,russian]{babel}
             \usepackage{hyperref}
@@ -172,11 +172,6 @@ class LatexGenerator():
             \defaultfontfeatures{Extension = .otf}% adds .otf to end of path when font loaded without ext parameter e.g. \newfontfamily{\FA}{FontAwesome} > \newfontfamily{\FA}{FontAwesome.otf}
             \usepackage{fontawesome}
         """))
-
-    def write_age(self) -> None:
-        now = datetime.now().date()
-        age = self.resume.applicant.age(at=now)
-        self.write_line(f"{age} years old")
 
     def write_phone(self) -> None:
         self.write_link_with_icon(
@@ -192,13 +187,11 @@ class LatexGenerator():
         )
 
     def write_text_with_icon(self, icon: str, text: str) -> None:
-        self.write(r"\faicon{%s}~%s" % (icon, text))
+        self.write(r"\faicon{%s} & %s" % (icon, text))
 
     def write_link_with_icon(self, url: str, icon: str, text: str) -> None:
-        self.write(r"\href{%s}" % url)
-        self.write("{")
-        self.write_text_with_icon(icon, text)
-        self.write("}")
+        text_with_url = rf"\href{{{url}}}{{{text}}}"
+        self.write_text_with_icon(icon, text_with_url)
 
     def write_github(self) -> None:
         username = self.resume.applicant.contacts.github
@@ -236,36 +229,70 @@ class LatexGenerator():
             text=site,
         )
 
+    def write_address(self) -> None:
+        country = self.resume.applicant.address.country
+        city = self.resume.applicant.address.city
+
+        self.write_text_with_icon(
+            icon="map-marker",
+            text=rf"{city} ({country})",
+        )
+
     def write_contacts(self) -> None:
-        self.write_phone()
-        self.write(" | ")
-        self.write_email()
-        self.write(" | ")
+        self.write_line(r"\subsection*{Contacts \tiny{\normalfont (links are clickable)}}")
+        self.write_line(r"\hrule")
+        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\begin{tabular}{ c l c l c l }")
+
+        self.write_address()
+        self.write_line("&")
         self.write_github()
-        self.write(" | ")
-        self.write_gitlab()
-        self.write(" | ")
-        self.write_skype()
-        self.write(" | ")
+        self.write_line("&")
         self.write_linkedin()
-        self.write(" | ")
+        self.write_line(r"\\")
+
+        self.write_phone()
+        self.write_line("&")
+        self.write_gitlab()
+        self.write_line("&")
+        self.write_skype()
+        self.write_line(r"\\")
+
+        self.write_email()
+        self.write_line("&")
         self.write_web()
 
+        self.write_line(r"\end{tabular}")
+
+    def write_name(self) -> None:
+        name = self.resume.applicant.name
+        self.write_line(rf"\section*{{{name}}}")
+
+    def write_position(self) -> None:
+        position = self.resume.position.name
+        self.write_line(rf"\subsection*{{{position}}}")
+
+    def write_age(self) -> None:
+        the_moment = datetime.now()
+        age = self.resume.applicant.age(at=the_moment)
+
+        self.write_line(rf"{age} years old")
+
     def write_header(self) -> None:
-        self.write_line(self.resume.applicant.name)
-        self.write_line("")
-        self.write_line(self.resume.position.name)
-        self.write_line("")
-        self.write_age()
-        self.write_line("")
-        self.write_line(self.resume.applicant.address.country)
-        self.write_line("")
+        self.write_name()
+        self.write_position()
+        self.write_line(r"\vspace{1em}")
+
         self.write_contacts()
 
     def write_skill(self, skill: str) -> None:
         self.write_line(fr"\item {skill}")
 
     def write_all_skills(self) -> None:
+        self.write_line(r"\subsection*{Skills}")
+        self.write_line(r"\hrule")
+        self.write_line(r"\vspace{1em}")
+
         self.write_line(r"\begin{itemize}")
 
         for skill in self.resume.applicant.skills:
@@ -289,6 +316,10 @@ class LatexGenerator():
         self.write_line(f"{name} ({level})")
 
     def write_all_languages(self) -> None:
+        self.write_line(r"\subsection*{Languages}")
+        self.write_line(r"\hrule")
+        self.write_line(r"\vspace{1em}")
+
         for language in self.resume.applicant.languages:
             if language.level == LanguageLevel.Beginner:
                 continue
@@ -308,6 +339,10 @@ class LatexGenerator():
             self.write_line(achivement)
 
     def write_all_working_places(self) -> None:
+        self.write_line(r"\subsection*{Experience}")
+        self.write_line(r"\hrule")
+        self.write_line(r"\vspace{1em}")
+
         for working_place in self.resume.applicant.experience:
             self.write_working_place(working_place)
 
@@ -324,6 +359,10 @@ class LatexGenerator():
         self.write_line(level)
 
     def write_all_education_places(self) -> None:
+        self.write_line(r"\subsection*{Education}")
+        self.write_line(r"\hrule")
+        self.write_line(r"\vspace{1em}")
+
         for education_place in self.resume.applicant.education:
             self.write_education_place(education_place)
 
