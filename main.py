@@ -311,12 +311,28 @@ class LatexGenerator():
         for working_place in self.resume.applicant.experience:
             self.write_working_place(working_place)
 
+    def write_education_place(self, education_place: EducationPlace) -> None:
+        level = {
+            EducationLevel.TVET: "TVET",
+            EducationLevel.BachelorsDegree: "Bachelor's degree",
+            EducationLevel.MastersDegree: "Master's degree",
+        }[education_place.level]
+
+        self.write_line(f"{education_place.then.year_to}")
+        self.write_line(education_place.place)
+        self.write_line(education_place.speciality)
+        self.write_line(level)
+
+    def write_all_education_places(self) -> None:
+        for education_place in self.resume.applicant.education:
+            self.write_education_place(education_place)
+
     def write_content(self) -> None:
         self.write_header()
         self.write_all_skills()
         self.write_all_languages()
         self.write_all_working_places()
-        # self.write_education()
+        self.write_all_education_places()
 
     def write_document(self) -> None:
         self.write_line(r"\begin{document}")
