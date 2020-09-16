@@ -505,7 +505,7 @@ me = Applicant(
                 I've learned a lot about databases, OLAP-cubes. Learned how to improve uncultivated development process and how to lead small teams.
             """),
             achivements=[
-                "Improved development process and overall products quality by introducing gitflow, continous integration, unit and smoke testing",
+                "Improved development process and overall products quality by introducing gitflow, continous integration, style guides, code reviews, unit and smoke testing",
                 "Improved performance of XML parsing by creating specialized XML parser as Python Extension Module with Rust",
                 "Improved maintainability of several legact projects by rewriting from scratch and/or gradual refactoring",
                 "Created several forecasting models using machine learning",
@@ -540,6 +540,7 @@ me = Applicant(
         "Learning Romance languages",
         "Drawing hands with pen",
         "Playing guitar",
+        "Reading tech books",
         "Using Haskell and Rust",
         "Writing compilers",
     ],
