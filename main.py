@@ -114,7 +114,7 @@ class Applicant(NamedTuple):
 
 class Position(NamedTuple):
     name: str
-    skills: List[List[str]]
+    skills: List[str]
 
 
 class Resume(NamedTuple):
@@ -171,6 +171,9 @@ class LatexGenerator():
             \usepackage{fontspec}
             \defaultfontfeatures{Extension = .otf}% adds .otf to end of path when font loaded without ext parameter e.g. \newfontfamily{\FA}{FontAwesome} > \newfontfamily{\FA}{FontAwesome.otf}
             \usepackage{fontawesome}
+            \usepackage[document]{ragged2e}
+
+            \pagenumbering{gobble}
         """))
 
     def write_phone(self) -> None:
@@ -294,13 +297,22 @@ class LatexGenerator():
         self.write_line(r"\vspace{1em}")
 
         self.write_line(r"\begin{itemize}")
+        self.write_line(r"\setlength\itemsep{0em}")
+        self.write_line(r"\rightskip2.5cm\relax")
 
-        for skill in self.resume.applicant.skills:
-            self.write_skill(skill)
+        self.write_line(r"\item[] Soft:")
+        self.write_line(
+            ", ".join(
+                self.resume.applicant.skills
+            ).capitalize()
+        )
 
-        for skill_group in self.resume.position.skills:
-            for skill in skill_group:
-                self.write_skill(skill)
+        self.write_line(r"\item[] Hard:")
+        self.write_line(
+            ", ".join(
+                self.resume.position.skills
+            ).capitalize()
+        )
 
         self.write_line(r"\end{itemize}")
 
@@ -313,12 +325,16 @@ class LatexGenerator():
             LanguageLevel.Native: "Native",
         }[language.level]
 
-        self.write_line(f"{name} ({level})")
+        self.write_line(fr"\item[] {name} ({level})")
 
     def write_all_languages(self) -> None:
         self.write_line(r"\subsection*{Languages}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
+
+        self.write_line(r"\begin{itemize}")
+        self.write_line(r"\rightskip2.5cm\relax")
+        self.write_line(r"\setlength\itemsep{0em}")
 
         for language in self.resume.applicant.languages:
             if language.level == LanguageLevel.Beginner:
@@ -326,9 +342,11 @@ class LatexGenerator():
 
             self.write_language(language)
 
+        self.write_line(r"\end{itemize}")
+
     def write_working_place(self, working_place: WorkingPlace) -> None:
         self.write(f"""
-            {working_place.position} ({working_place.place})
+            \item[] {working_place.position} ({working_place.place})
         """)
         self.write("\n\n")
 
@@ -343,8 +361,14 @@ class LatexGenerator():
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
 
+        self.write_line(r"\begin{itemize}")
+        self.write_line(r"\rightskip2.5cm\relax")
+        self.write_line(r"\setlength\itemsep{0em}")
+
         for working_place in self.resume.applicant.experience:
             self.write_working_place(working_place)
+
+        self.write_line(r"\end{itemize}")
 
     def write_education_place(self, education_place: EducationPlace) -> None:
         level = {
@@ -593,32 +617,32 @@ me = Applicant(
 
 python_developer = Position(
     name="Python Developer",
-    skills=[[
+    skills=[
         "Python",
         "asyncio/aiohttp",
         "PEP8",
-        "MyPy / typing",
-    ], [
+        "MyPy/typing",
+
         "REST/RESUful API",
         "WebSocket",
-    ], [
+
         "Tornado",
         "Django/DRF",
-    ], [
+
         "RabbitMQ",
         "Celery",
-    ], [
+
         "PostgreSQL",
         "MongoDB",
         "Redis",
-    ], [
+
         "Linux",
         "Docker",
-    ], [
+
         "Git",
         "Automated Testing",
         "Continious Integration",
-    ]],
+    ],
 )
 
 
