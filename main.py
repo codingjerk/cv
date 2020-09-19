@@ -114,6 +114,7 @@ class Applicant(NamedTuple):
 
 class Position(NamedTuple):
     name: str
+    about: str
     skills: List[str]
 
 
@@ -151,6 +152,18 @@ def years_between(from_date: date, to_date: date) -> int:
     return rough_difference
 
 
+def make_sequence(delimiters: List[str], elements: List[str]) -> str:
+    [first_delimiter, *other_delimiters] = delimiters
+
+    first_delimiter_count = len(elements) - len(other_delimiters)
+    delimiters = [first_delimiter] * first_delimiter_count + other_delimiters
+
+    return "".join([
+        f"{element}{delimiter}"
+        for element, delimiter in zip(elements, delimiters)
+    ])
+
+
 class LatexGenerator():
     def __init__(self, resume: Resume) -> None:
         self.resume = resume
@@ -172,6 +185,7 @@ class LatexGenerator():
             \defaultfontfeatures{Extension = .otf}% adds .otf to end of path when font loaded without ext parameter e.g. \newfontfamily{\FA}{FontAwesome} > \newfontfamily{\FA}{FontAwesome.otf}
             \usepackage{fontawesome}
             \usepackage[document]{ragged2e}
+            \usepackage{tabularx}
 
             \pagenumbering{gobble}
         """))
@@ -244,6 +258,7 @@ class LatexGenerator():
     def write_contacts(self) -> None:
         self.write_line(r"\subsection*{Contacts \tiny{\normalfont (links are clickable)}}")
         self.write_line(r"\hrule")
+        self.write_line(r"\leftskip0.7cm\relax")
         self.write_line(r"\vspace{1em}")
         self.write_line(r"\begin{tabular}{ c l c l c l }")
 
@@ -266,6 +281,8 @@ class LatexGenerator():
         self.write_web()
 
         self.write_line(r"\end{tabular}")
+        self.write_line("")
+        self.write_line(r"\leftskip0cm\relax")
 
     def write_name(self) -> None:
         name = self.resume.applicant.name
@@ -300,19 +317,17 @@ class LatexGenerator():
         self.write_line(r"\setlength\itemsep{0em}")
         self.write_line(r"\rightskip2.5cm\relax")
 
-        self.write_line(r"\item[] Soft:")
-        self.write_line(
-            ", ".join(
-                self.resume.applicant.skills
-            ).capitalize()
+        skills = make_sequence(
+            [", ", " and ", "."],
+            self.resume.applicant.skills,
         )
+        self.write_line(fr"\item[] Soft: {skills}")
 
-        self.write_line(r"\item[] Hard:")
-        self.write_line(
-            ", ".join(
-                self.resume.position.skills
-            ).capitalize()
+        skills = make_sequence(
+            [", ", " and ", "."],
+            self.resume.position.skills,
         )
+        self.write_line(fr"\item[] Hard: {skills}")
 
         self.write_line(r"\end{itemize}")
 
@@ -344,17 +359,27 @@ class LatexGenerator():
 
         self.write_line(r"\end{itemize}")
 
-    def write_working_place(self, working_place: WorkingPlace) -> None:
-        self.write(f"""
-            \item[] {working_place.position} ({working_place.place})
+    def write_working_place(self, working_place: WorkingPlace, first: bool) -> None:
+        if not first:
+            self.write_line(r"\vspace{1em}")
+
+        self.write_line(fr"""
+            \item[]
+            \textbf{{\large {working_place.position}}}
+
+            \textbf{{{working_place.place}}}
         """)
-        self.write("\n\n")
 
         self.write_line(working_place.description)
+        self.write_line("")
 
-        self.write_line("Achivements:")
+        self.write_line(r"\textbf{Achivements}")
+        self.write_line(r"\begin{itemize}")
+        self.write_line(r"\rightskip2.5cm\relax")
+        self.write_line(r"\setlength\itemsep{0em}")
         for achivement in working_place.achivements:
-            self.write_line(achivement)
+            self.write_line(rf"\item[$\bullet$] {achivement}")
+        self.write_line(r"\end{itemize}")
 
     def write_all_working_places(self) -> None:
         self.write_line(r"\subsection*{Experience}")
@@ -365,33 +390,65 @@ class LatexGenerator():
         self.write_line(r"\rightskip2.5cm\relax")
         self.write_line(r"\setlength\itemsep{0em}")
 
-        for working_place in self.resume.applicant.experience:
-            self.write_working_place(working_place)
+        for index, working_place in enumerate(self.resume.applicant.experience):
+            self.write_working_place(working_place, first=(index == 0))
 
         self.write_line(r"\end{itemize}")
 
-    def write_education_place(self, education_place: EducationPlace) -> None:
+    def write_education_place(self, education_place: EducationPlace, first: bool) -> None:
         level = {
             EducationLevel.TVET: "TVET",
             EducationLevel.BachelorsDegree: "Bachelor's degree",
             EducationLevel.MastersDegree: "Master's degree",
         }[education_place.level]
 
-        self.write_line(f"{education_place.then.year_to}")
-        self.write_line(education_place.place)
-        self.write_line(education_place.speciality)
-        self.write_line(level)
+        if not first:
+            self.write_line(r"\\")
+
+        self.write_line(fr"""
+            {education_place.then.year_to} &
+            \textbf{{\large{{{education_place.place}}}}} &
+            {level}
+            \\
+            & {education_place.speciality}
+            \\
+        """)
 
     def write_all_education_places(self) -> None:
         self.write_line(r"\subsection*{Education}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
 
-        for education_place in self.resume.applicant.education:
-            self.write_education_place(education_place)
+        self.write_line(r"\leftskip0.7cm\relax")
+        self.write_line(r"\begin{tabularx}{36em}{ r X r }")
+
+        for index, education_place in enumerate(self.resume.applicant.education):
+            self.write_education_place(education_place, first=(index == 0))
+
+        self.write_line(r"\end{tabularx}")
+
+    def write_about(self) -> None:
+        loves = make_sequence(
+            [", ", " and ", "."],
+            self.resume.applicant.hobbies,
+        )
+
+        self.write_line(r"\subsection*{About}")
+        self.write_line(r"\hrule")
+        self.write_line(r"\vspace{1em}")
+        self.write_line(rf"""{{
+            \leftskip0.95cm\relax
+            \rightskip2.5cm\relax
+            {self.resume.position.about}
+
+            I love to {loves}
+
+        }}""")
+
 
     def write_content(self) -> None:
         self.write_header()
+        self.write_about()
         self.write_all_skills()
         self.write_all_languages()
         self.write_all_working_places()
@@ -456,7 +513,7 @@ me = Applicant(
             position="Junior Software Developer",
             then=MonthInterval(Month(2010, 7), Month(2012, 12)),
             description=d("""
-                I started working here half-time, just after I finished a school.
+                I started working here half-time, just after I graduated from a highschool.
                 We worked on accounting system for money transfers (Unistream, CONTACT, Western Union, KoronaPay) using Delphi and C++ as our primary programming languages paired with FoxPro database.
                 Even on half-time job I've learned a lot.
             """),
@@ -595,17 +652,17 @@ me = Applicant(
         Language("French", LanguageLevel.Beginner),
     ],
     skills=[
-        "Time management (work-load handling, scheduling)",
-        "Training/mentoring junior developers",
-        "Gradual improvement of legacy code",
+        "time management (work-load handling, scheduling)",
+        "training/mentoring junior developers",
+        "gradual improvement of legacy code",
     ],
     hobbies=[
-        "Learning Romance languages",
-        "Drawing hands with pen",
-        "Playing guitar",
-        "Reading tech books",
-        "Using Haskell and Rust",
-        "Writing compilers",
+        "learning Romance languages",
+        "drawing hands with pen",
+        "playing guitar",
+        "reading tech books",
+        "using Haskell and Rust in pet-projects",
+        "writing compilers",
     ],
     wishes=[
         "Learning new domains",
@@ -615,33 +672,40 @@ me = Applicant(
 )
 
 
+# TODO: increase header font sizes
+# TODO: remove useless skills
+# TODO: use jinja templates
 python_developer = Position(
     name="Python Developer",
+    about=d("""
+        I have over 6 years of experience as a software engineer and have worked at both small and large organizations.
+        I'm mostly Backend/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
+    """),
     skills=[
-        "Python",
+        "python",
         "asyncio/aiohttp",
-        "PEP8",
-        "MyPy/typing",
+        "pep8",
+        "mypy/typing",
 
         "REST/RESUful API",
-        "WebSocket",
+        "websocket",
 
-        "Tornado",
-        "Django/DRF",
+        "tornado",
+        "django/DRF",
 
-        "RabbitMQ",
-        "Celery",
+        "rabbitMQ",
+        "celery",
 
-        "PostgreSQL",
-        "MongoDB",
-        "Redis",
+        "postgreSQL",
+        "mongoDB",
+        "redis",
 
-        "Linux",
-        "Docker",
+        "linux",
+        "docker",
 
-        "Git",
-        "Automated Testing",
-        "Continious Integration",
+        "git",
+        "automated testing",
+        "continious integration",
     ],
 )
 
