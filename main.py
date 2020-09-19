@@ -447,7 +447,8 @@ class LatexGenerator():
         self.write_line(r"\leftskip0.7cm\relax")
         self.write_line(r"\begin{tabularx}{42em}{ r X r }")
 
-        for index, education_place in enumerate(self.resume.applicant.education):
+        education = enumerate(reversed(self.resume.applicant.education))
+        for index, education_place in education:
             self.write_education_place(education_place, first=(index == 0))
 
         self.write_line(r"\end{tabularx}")
@@ -700,10 +701,8 @@ me = Applicant(
 )
 
 
-# TODO: increase header font sizes
-# TODO: remove useless skills
 # TODO: add years for working places
-# TODO: reverse order of working and education places
+# TODO: remove useless skills
 # TODO: use jinja templates
 python_developer = Position(
     name="Python Developer",
