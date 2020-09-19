@@ -186,6 +186,8 @@ class LatexGenerator():
             \usepackage{fontawesome}
             \usepackage[document]{ragged2e}
             \usepackage{tabularx}
+            \usepackage{graphicx}
+            \usepackage{wrapfig}
 
             \pagenumbering{gobble}
         """))
@@ -256,7 +258,8 @@ class LatexGenerator():
         )
 
     def write_contacts(self) -> None:
-        self.write_line(r"\subsection*{Contacts \tiny{\normalfont (links are clickable)}}")
+        self.write_line(r"\textbf{{\Large Contacts}} \footnotesize{\normalfont (links are clickable)")
+        self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\leftskip0.7cm\relax")
         self.write_line(r"\vspace{1em}")
@@ -283,14 +286,27 @@ class LatexGenerator():
         self.write_line(r"\end{tabular}")
         self.write_line("")
         self.write_line(r"\leftskip0cm\relax")
+        self.write_line(r"\vspace{1.5em}")
+
+    def write_photo(self) -> None:
+        self.write_line(r"""
+            \begin{wrapfigure}[2]{r}{10em}
+                \vspace{-1.75em}
+                \includegraphics[width=6em]{photo.png}
+            \end{wrapfigure}
+        """)
 
     def write_name(self) -> None:
         name = self.resume.applicant.name
-        self.write_line(rf"\section*{{{name}}}")
+        self.write_line(rf"\textbf{{\huge {name}}}")
+        self.write_line(r"\vspace{1em}")
+        self.write_line("")
 
     def write_position(self) -> None:
         position = self.resume.position.name
-        self.write_line(rf"\subsection*{{{position}}}")
+        self.write_line(rf"\textbf{{\LARGE {position}}}")
+        self.write_line(r"\vspace{1em}")
+        self.write_line("")
 
     def write_age(self) -> None:
         the_moment = datetime.now()
@@ -299,9 +315,10 @@ class LatexGenerator():
         self.write_line(rf"{age} years old")
 
     def write_header(self) -> None:
+        self.write_photo()
         self.write_name()
         self.write_position()
-        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\vspace{2em}")
 
         self.write_contacts()
 
@@ -309,7 +326,8 @@ class LatexGenerator():
         self.write_line(fr"\item {skill}")
 
     def write_all_skills(self) -> None:
-        self.write_line(r"\subsection*{Skills}")
+        self.write_line(r"\textbf{{\Large Skills}}")
+        self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
 
@@ -330,6 +348,7 @@ class LatexGenerator():
         self.write_line(fr"\item[] Hard: {skills}")
 
         self.write_line(r"\end{itemize}")
+        self.write_line(r"\vspace{1.5em}")
 
     def write_language(self, language: Language) -> None:
         name = language.name
@@ -343,7 +362,8 @@ class LatexGenerator():
         self.write_line(fr"\item[] {name} ({level})")
 
     def write_all_languages(self) -> None:
-        self.write_line(r"\subsection*{Languages}")
+        self.write_line(r"\textbf{{\Large Languages}}")
+        self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
 
@@ -358,6 +378,7 @@ class LatexGenerator():
             self.write_language(language)
 
         self.write_line(r"\end{itemize}")
+        self.write_line(r"\vspace{1.5em}")
 
     def write_working_place(self, working_place: WorkingPlace, first: bool) -> None:
         if not first:
@@ -382,7 +403,8 @@ class LatexGenerator():
         self.write_line(r"\end{itemize}")
 
     def write_all_working_places(self) -> None:
-        self.write_line(r"\subsection*{Experience}")
+        self.write_line(r"\textbf{{\Large Experience}}")
+        self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
 
@@ -390,10 +412,12 @@ class LatexGenerator():
         self.write_line(r"\rightskip2.5cm\relax")
         self.write_line(r"\setlength\itemsep{0em}")
 
-        for index, working_place in enumerate(self.resume.applicant.experience):
+        experience = enumerate(reversed(self.resume.applicant.experience))
+        for index, working_place in experience:
             self.write_working_place(working_place, first=(index == 0))
 
         self.write_line(r"\end{itemize}")
+        self.write_line(r"\vspace{1.5em}")
 
     def write_education_place(self, education_place: EducationPlace, first: bool) -> None:
         level = {
@@ -415,17 +439,19 @@ class LatexGenerator():
         """)
 
     def write_all_education_places(self) -> None:
-        self.write_line(r"\subsection*{Education}")
+        self.write_line(r"\textbf{{\Large Education}}")
+        self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
 
         self.write_line(r"\leftskip0.7cm\relax")
-        self.write_line(r"\begin{tabularx}{36em}{ r X r }")
+        self.write_line(r"\begin{tabularx}{42em}{ r X r }")
 
         for index, education_place in enumerate(self.resume.applicant.education):
             self.write_education_place(education_place, first=(index == 0))
 
         self.write_line(r"\end{tabularx}")
+        self.write_line(r"\vspace{1.5em}")
 
     def write_about(self) -> None:
         loves = make_sequence(
@@ -433,7 +459,8 @@ class LatexGenerator():
             self.resume.applicant.hobbies,
         )
 
-        self.write_line(r"\subsection*{About}")
+        self.write_line(r"\textbf{{\Large About}}")
+        self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
         self.write_line(rf"""{{
@@ -444,6 +471,7 @@ class LatexGenerator():
             I love to {loves}
 
         }}""")
+        self.write_line(r"\vspace{1.5em}")
 
 
     def write_content(self) -> None:
@@ -674,6 +702,8 @@ me = Applicant(
 
 # TODO: increase header font sizes
 # TODO: remove useless skills
+# TODO: add years for working places
+# TODO: reverse order of working and education places
 # TODO: use jinja templates
 python_developer = Position(
     name="Python Developer",
@@ -710,5 +740,6 @@ python_developer = Position(
 )
 
 
-latex = Resume(me, python_developer).to_latex()
-print(latex)
+if __name__ == "__main__":
+    latex = Resume(me, python_developer).to_latex()
+    print(latex)
