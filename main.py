@@ -2,10 +2,31 @@ from datetime import date, datetime
 from enum import Enum, auto
 from io import StringIO
 from textwrap import dedent
-from typing import List, NamedTuple, Optional
+from typing import List, Optional, Dict
+from dataclasses import dataclass
 
 
-class Contacts(NamedTuple):
+@dataclass
+class Text:
+    language_to_string: Dict[str, str]
+
+    def to_string(self, lang: str) -> str:
+        return self.language_to_string[lang]
+
+
+def t(**kwargs: str) -> Text:
+    return Text(kwargs)
+
+
+def s(text: str) -> Text:
+    return Text({
+        "en": text,
+        "ru": text,
+    })
+
+
+@dataclass
+class Contacts:
     email: str
     phone: str
     github: str
@@ -24,7 +45,8 @@ class Contacts(NamedTuple):
         return f"+{p1} ({p2}) {p3}-{p4}-{p5}"
 
 
-class Address(NamedTuple):
+@dataclass
+class Address:
     country: str
     city: str
 
@@ -35,29 +57,34 @@ class EducationLevel(Enum):
     MastersDegree = auto()
 
 
-class YearInterval(NamedTuple):
+@dataclass
+class YearInterval:
     year_from: int
     year_to: int
 
 
-class EducationPlace(NamedTuple):
+@dataclass
+class EducationPlace:
     place: str
     speciality: str
     level: EducationLevel
     then: YearInterval
 
 
-class Month(NamedTuple):
+@dataclass
+class Month:
     year: int
     month: int
 
 
-class MonthInterval(NamedTuple):
+@dataclass
+class MonthInterval:
     month_from: Month
     month_to: Optional[Month]
 
 
-class WorkingPlace(NamedTuple):
+@dataclass
+class WorkingPlace:
     place: str
     position: str
     then: MonthInterval
@@ -74,7 +101,8 @@ class LanguageLevel(Enum):
     Native = auto()
 
 
-class Language(NamedTuple):
+@dataclass
+class Language:
     name: str
     level: LanguageLevel
 
@@ -89,13 +117,15 @@ class SalaryUnit(Enum):
     RUB = auto()
 
 
-class Salary(NamedTuple):
+@dataclass
+class Salary:
     period: SalaryPeriod
     unit: SalaryUnit
     amount: int
 
 
-class Applicant(NamedTuple):
+@dataclass
+class Applicant:
     name: str
     desired_salary: Salary
     birthdate: date
@@ -104,7 +134,7 @@ class Applicant(NamedTuple):
     education: List[EducationPlace]
     experience: List[WorkingPlace]
     languages: List[Language]
-    skills: List[str]
+    skills: List[Text]
     hobbies: List[str]
     wishes: List[str]
 
@@ -112,18 +142,20 @@ class Applicant(NamedTuple):
         return years_between(self.birthdate, at)
 
 
-class Position(NamedTuple):
-    name: str
-    about: str
-    skills: List[str]
+@dataclass
+class Position:
+    name: Text
+    about: Text
+    skills: List[Text]
 
 
-class Resume(NamedTuple):
+@dataclass
+class Resume:
     applicant: Applicant
     position: Position
 
-    def to_latex(self) -> str:
-        generator = LatexGenerator(self)
+    def to_latex(self, lang: str) -> str:
+        generator = LatexGenerator(self, lang)
         return generator.generate()
 
 
@@ -165,8 +197,9 @@ def make_sequence(delimiters: List[str], elements: List[str]) -> str:
 
 
 class LatexGenerator():
-    def __init__(self, resume: Resume) -> None:
+    def __init__(self, resume: Resume, lang: str) -> None:
         self.resume = resume
+        self.lang = lang
         self.stream = StringIO()
 
     def write(self, text: str) -> None:
@@ -182,7 +215,10 @@ class LatexGenerator():
             \usepackage[english,russian]{babel}
             \usepackage{hyperref}
             \usepackage{fontspec}
-            \defaultfontfeatures{Extension = .otf}% adds .otf to end of path when font loaded without ext parameter e.g. \newfontfamily{\FA}{FontAwesome} > \newfontfamily{\FA}{FontAwesome.otf}
+            \setmainfont{CMU Serif}
+            \setsansfont{Noto Sans}
+            \setmonofont{Noto Sans Mono}
+            \defaultfontfeatures{Extension = .otf}
             \usepackage{fontawesome}
             \usepackage[document]{ragged2e}
             \usepackage{tabularx}
@@ -235,9 +271,11 @@ class LatexGenerator():
         )
 
     def write_linkedin(self) -> None:
-        self.write_text_with_icon(
+        username = self.resume.applicant.contacts.linkedin
+        self.write_link_with_icon(
+            url=f"https://linkedin.com/in/{username}",
             icon="linkedin",
-            text=self.resume.applicant.contacts.linkedin,
+            text=username,
         )
 
     def write_web(self) -> None:
@@ -303,7 +341,7 @@ class LatexGenerator():
         self.write_line("")
 
     def write_position(self) -> None:
-        position = self.resume.position.name
+        position = self.resume.position.name.to_string(self.lang)
         self.write_line(rf"\textbf{{\LARGE {position}}}")
         self.write_line(r"\vspace{1em}")
         self.write_line("")
@@ -337,13 +375,19 @@ class LatexGenerator():
 
         skills = make_sequence(
             [", ", " and ", "."],
-            self.resume.applicant.skills,
+            [
+                skill.to_string(self.lang)
+                for skill in self.resume.applicant.skills
+            ],
         )
         self.write_line(fr"\item[] Soft: {skills}")
 
         skills = make_sequence(
             [", ", " and ", "."],
-            self.resume.position.skills,
+            [
+                skill.to_string(self.lang)
+                for skill in self.resume.position.skills
+            ],
         )
         self.write_line(fr"\item[] Hard: {skills}")
 
@@ -467,7 +511,7 @@ class LatexGenerator():
         self.write_line(rf"""{{
             \leftskip0.95cm\relax
             \rightskip2.5cm\relax
-            {self.resume.position.about}
+            {self.resume.position.about.to_string(self.lang)}
 
             I love to {loves}
 
@@ -681,9 +725,18 @@ me = Applicant(
         Language("French", LanguageLevel.Beginner),
     ],
     skills=[
-        "time management (work-load handling, scheduling)",
-        "training/mentoring junior developers",
-        "gradual improvement of legacy code",
+        t(
+            en="time management (work-load handling, scheduling)",
+            ru="TODO",
+        ),
+        t(
+            en="training/mentoring junior developers",
+            ru="TODO",
+        ),
+        t(
+            en="gradual improvement of legacy code",
+            ru="TODO",
+        ),
     ],
     hobbies=[
         "learning Romance languages",
@@ -705,40 +758,33 @@ me = Applicant(
 # TODO: remove useless skills
 # TODO: use jinja templates
 python_developer = Position(
-    name="Python Developer",
-    about=d("""
-        I have over 6 years of experience as a software engineer and have worked at both small and large organizations.
-        I'm mostly Backend/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
-    """),
+    name=t(
+        en="Python Developer",
+        ru="Разработчик Python",
+    ),
+    about=t(
+        en=d("""
+            I have over 6 years of experience as a software engineer and have worked at both small and large organizations.
+            I'm mostly Backend/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
+        """),
+        ru=d("""
+            TODO
+        """),
+    ),
     skills=[
-        "python",
-        "asyncio/aiohttp",
-        "pep8",
-        "mypy/typing",
-
-        "REST/RESUful API",
-        "websocket",
-
-        "tornado",
-        "django/DRF",
-
-        "rabbitMQ",
-        "celery",
-
-        "postgreSQL",
-        "mongoDB",
-        "redis",
-
-        "linux",
-        "docker",
-
-        "git",
-        "automated testing",
-        "continious integration",
+        s("python"),
+        s("mypy/typing"),
+        s("REST/RESUful API"),
+        s("postgreSQL"),
+        s("linux"),
+        s("docker"),
+        s("git"),
+        s("automated testing"),
+        s("continious integration"),
     ],
 )
 
 
 if __name__ == "__main__":
-    latex = Resume(me, python_developer).to_latex()
+    latex = Resume(me, python_developer).to_latex(lang="ru")
     print(latex)
