@@ -540,7 +540,10 @@ class LatexGenerator():
 
 
 me = Applicant(
-    name="Denis Gruzdev",
+    name=t(
+        en="Denis Gruzdev",
+        ru="Груздев Денис",
+    ),
     birthdate=date(1993, 7, 31),
     desired_salary=Salary(
         period=SalaryPeriod.Annual,
@@ -557,43 +560,85 @@ me = Applicant(
         web="codingjerk.dev",
     ),
     address=Address(
-        country="Russia",
-        city="Moscow",
+        country=t(
+            en="Russia",
+            ru="Россия",
+        ),
+        city=t(
+            en="Moscow",
+            ru="Москва",
+        ),
     ),
     education=[
         EducationPlace(
-            place="Moscow College of Railway Transport",
-            speciality="Automatic Information Processing and Control Systems",
+            place=t(
+                en="Moscow College of Railway Transport",
+                ru="Московский колледж железножорожного транспорта",
+            ),
+            speciality=t(
+                en="Automatic Information Processing and Control Systems",
+                ru="Автоматизированные системы обработки информации и управления",
+            ),
             level=EducationLevel.TVET,
             then=YearInterval(2011, 2014),
         ),
         EducationPlace(
-            place="Moscow Power Engineering Institute",
-            speciality="Computer Science and Engineering",
+            place=t(
+                en="Moscow Power Engineering Institute",
+                ru="Московский энергетический институт",
+            ),
+            speciality=t(
+                en="Computer Science and Engineering",
+                ru="Информатика и вычислительная техника",
+            ),
             level=EducationLevel.BachelorsDegree,
             then=YearInterval(2014, 2017),
         ),
         EducationPlace(
-            place="Moscow Power Engineering Institute",
-            speciality="Applied Mathematics and Informatics",
+            place=t(
+                en="Moscow Power Engineering Institute",
+                ru="Московский энергетический институт",
+            ),
+            speciality=t(
+                en="Applied Mathematics and Informatics",
+                ru="Прикладная математика и информатика",
+            ),
             level=EducationLevel.MastersDegree,
             then=YearInterval(2020, 2022),
         ),
     ],
     experience=[
         WorkingPlace(
-            place="Navigator Bank",
-            position="Junior Software Developer",
+            place=t(
+                en="Navigator Bank",
+                ru="Навигатор Банк",
+            ),
+            position=t(
+                en="Junior Software Developer",
+                ru="Младший разработчик",
+            ),
             then=MonthInterval(Month(2010, 7), Month(2012, 12)),
-            description=d("""
-                I started working here half-time, just after I graduated from a highschool.
-                We worked on accounting system for money transfers (Unistream, CONTACT, Western Union, KoronaPay) using Delphi and C++ as our primary programming languages paired with FoxPro database.
-                Even on half-time job I've learned a lot.
-            """),
+            description=t(
+                en=d("""
+                    I started working here half-time, just after I graduated from a highschool.
+                    We worked on accounting system for money transfers (Unistream, CONTACT, Western Union, KoronaPay) using Delphi and C++ as our primary programming languages paired with FoxPro database.
+                    Even on half-time job I've learned a lot.
+                """),
+                ru="TODO",
+            ),
             achivements=[
-                "Improved performance of legacy report generation system",
-                "Extended accounting system with client database module",
-                "Added autocompletion feature to input forms",
+                t(
+                    en="Improved performance of legacy report generation system",
+                    ru="TODO",
+                ),
+                t(
+                    en="Extended accounting system with client database module",
+                    ru="TODO",
+                ),
+                t(
+                    en="Added autocompletion feature to input forms",
+                    ru="TODO",
+                ),
             ],
             keywords=[
                 "Delphi",
