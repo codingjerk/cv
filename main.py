@@ -13,6 +13,9 @@ class Text:
     def to_string(self, lang: str) -> str:
         return self.language_to_string[lang]
 
+    def __str__(self):
+        raise NotImplementedError
+
 
 def t(**kwargs: str) -> Text:
     return Text(kwargs)
@@ -47,8 +50,8 @@ class Contacts:
 
 @dataclass
 class Address:
-    country: str
-    city: str
+    country: Text
+    city: Text
 
 
 class EducationLevel(Enum):
@@ -65,8 +68,8 @@ class YearInterval:
 
 @dataclass
 class EducationPlace:
-    place: str
-    speciality: str
+    place: Text
+    speciality: Text
     level: EducationLevel
     then: YearInterval
 
@@ -85,12 +88,12 @@ class MonthInterval:
 
 @dataclass
 class WorkingPlace:
-    place: str
-    position: str
+    place: Text
+    position: Text
     then: MonthInterval
-    description: str
-    achivements: List[str]
-    keywords: List[str]
+    description: Text
+    achivements: List[Text]
+    keywords: List[Text]
 
 
 class LanguageLevel(Enum):
@@ -103,7 +106,7 @@ class LanguageLevel(Enum):
 
 @dataclass
 class Language:
-    name: str
+    name: Text
     level: LanguageLevel
 
 
@@ -126,7 +129,7 @@ class Salary:
 
 @dataclass
 class Applicant:
-    name: str
+    name: Text
     desired_salary: Salary
     birthdate: date
     contacts: Contacts
@@ -135,8 +138,8 @@ class Applicant:
     experience: List[WorkingPlace]
     languages: List[Language]
     skills: List[Text]
-    hobbies: List[str]
-    wishes: List[str]
+    hobbies: List[Text]
+    wishes: List[Text]
 
     def age(self, at: date) -> int:
         return years_between(self.birthdate, at)
@@ -197,6 +200,51 @@ def make_sequence(delimiters: List[str], elements: List[str]) -> str:
 
 
 class LatexGenerator():
+    contacts_header: Text = t(
+        en="Contacts",
+        ru="Контакты",
+    )
+
+    contacts_note: Text = t(
+        en="links are clickable",
+        ru="ссылки кликабельны",
+    )
+
+    about_header: Text = t(
+        en="About",
+        ru="Обо мне",
+    )
+
+    skills_header: Text = t(
+        en="Skills",
+        ru="Ключевые навыки",
+    )
+
+    languages_header: Text = t(
+        en="Languages",
+        ru="Языки",
+    )
+
+    experience_header: Text = t(
+        en="Experience",
+        ru="Опыт работы",
+    )
+
+    education_header: Text = t(
+        en="Education",
+        ru="Образование",
+    )
+
+    hobbies_prefix: Text = t(
+        en="I love to",
+        ru="Я люблю",
+    )
+
+    separators = {
+        "en": [", ", " and ", "."],
+        "ru": [", ", " и ", "."],
+    }
+
     def __init__(self, resume: Resume, lang: str) -> None:
         self.resume = resume
         self.lang = lang
@@ -236,9 +284,11 @@ class LatexGenerator():
         )
 
     def write_email(self) -> None:
-        self.write_text_with_icon(
-            icon="envelope",
-            text=self.resume.applicant.contacts.email,
+        email = self.resume.applicant.contacts.email
+        self.write_link_with_icon(
+            url=f"mailto:{email}",
+            icon="phone",
+            text=email,
         )
 
     def write_text_with_icon(self, icon: str, text: str) -> None:
@@ -287,8 +337,8 @@ class LatexGenerator():
         )
 
     def write_address(self) -> None:
-        country = self.resume.applicant.address.country
-        city = self.resume.applicant.address.city
+        country = self.resume.applicant.address.country.to_string(self.lang)
+        city = self.resume.applicant.address.city.to_string(self.lang)
 
         self.write_text_with_icon(
             icon="map-marker",
@@ -296,7 +346,9 @@ class LatexGenerator():
         )
 
     def write_contacts(self) -> None:
-        self.write_line(r"\textbf{{\Large Contacts}} \footnotesize{\normalfont (links are clickable)")
+        contacts_header = self.contacts_header.to_string(self.lang)
+        contacts_note = self.contacts_note.to_string(self.lang)
+        self.write_line(f"\\textbf{{\Large {contacts_header}}} \\footnotesize{{\\normalfont ({contacts_note})}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\leftskip0.7cm\relax")
@@ -328,14 +380,14 @@ class LatexGenerator():
 
     def write_photo(self) -> None:
         self.write_line(r"""
-            \begin{wrapfigure}[2]{r}{10em}
+            \begin{wrapfigure}[2]{r}{8em}
                 \vspace{-1.75em}
                 \includegraphics[width=6em]{photo.png}
             \end{wrapfigure}
         """)
 
     def write_name(self) -> None:
-        name = self.resume.applicant.name
+        name = self.resume.applicant.name.to_string(self.lang)
         self.write_line(rf"\textbf{{\huge {name}}}")
         self.write_line(r"\vspace{1em}")
         self.write_line("")
@@ -364,7 +416,8 @@ class LatexGenerator():
         self.write_line(fr"\item {skill}")
 
     def write_all_skills(self) -> None:
-        self.write_line(r"\textbf{{\Large Skills}}")
+        skills_header = self.skills_header.to_string(self.lang)
+        self.write_line(f"\\textbf{{\\Large {skills_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
@@ -374,7 +427,7 @@ class LatexGenerator():
         self.write_line(r"\rightskip2.5cm\relax")
 
         skills = make_sequence(
-            [", ", " and ", "."],
+            self.separators[self.lang],
             [
                 skill.to_string(self.lang)
                 for skill in self.resume.applicant.skills
@@ -383,7 +436,7 @@ class LatexGenerator():
         self.write_line(fr"\item[] Soft: {skills}")
 
         skills = make_sequence(
-            [", ", " and ", "."],
+            self.separators[self.lang],
             [
                 skill.to_string(self.lang)
                 for skill in self.resume.position.skills
@@ -395,18 +448,24 @@ class LatexGenerator():
         self.write_line(r"\vspace{1.5em}")
 
     def write_language(self, language: Language) -> None:
-        name = language.name
+        name = language.name.to_string(self.lang)
         level = {
-            LanguageLevel.Intermediate: "Intermediate",
-            LanguageLevel.Advanced: "Advanced",
-            LanguageLevel.Fluent: "Fluent",
-            LanguageLevel.Native: "Native",
-        }[language.level]
+            (LanguageLevel.Intermediate, "en"): "Intermediate",
+            (LanguageLevel.Advanced, "en"): "Advanced",
+            (LanguageLevel.Fluent, "en"): "Fluent",
+            (LanguageLevel.Native, "en"): "Native",
+
+            (LanguageLevel.Intermediate, "ru"): "Средний",
+            (LanguageLevel.Advanced, "ru"): "Продвинутый",
+            (LanguageLevel.Fluent, "ru"): "Беглый",
+            (LanguageLevel.Native, "ru"): "Родной",
+        }[(language.level, self.lang)]
 
         self.write_line(fr"\item[] {name} ({level})")
 
     def write_all_languages(self) -> None:
-        self.write_line(r"\textbf{{\Large Languages}}")
+        languages_header = self.languages_header.to_string(self.lang)
+        self.write_line(f"\\textbf{{\\Large {languages_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
@@ -430,12 +489,12 @@ class LatexGenerator():
 
         self.write_line(fr"""
             \item[]
-            \textbf{{\large {working_place.position}}}
+            \textbf{{\large {working_place.position.to_string(self.lang)}}}
 
-            \textbf{{{working_place.place}}}
+            \textbf{{{working_place.place.to_string(self.lang)}}}
         """)
 
-        self.write_line(working_place.description)
+        self.write_line(working_place.description.to_string(self.lang))
         self.write_line("")
 
         self.write_line(r"\textbf{Achivements}")
@@ -443,11 +502,12 @@ class LatexGenerator():
         self.write_line(r"\rightskip2.5cm\relax")
         self.write_line(r"\setlength\itemsep{0em}")
         for achivement in working_place.achivements:
-            self.write_line(rf"\item[$\bullet$] {achivement}")
+            self.write_line(rf"\item[$\bullet$] {achivement.to_string(self.lang)}")
         self.write_line(r"\end{itemize}")
 
     def write_all_working_places(self) -> None:
-        self.write_line(r"\textbf{{\Large Experience}}")
+        experience_header = self.experience_header.to_string(self.lang)
+        self.write_line(f"\\textbf{{\\Large {experience_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
@@ -465,25 +525,30 @@ class LatexGenerator():
 
     def write_education_place(self, education_place: EducationPlace, first: bool) -> None:
         level = {
-            EducationLevel.TVET: "TVET",
-            EducationLevel.BachelorsDegree: "Bachelor's degree",
-            EducationLevel.MastersDegree: "Master's degree",
-        }[education_place.level]
+            (EducationLevel.TVET, "en"): "TVET",
+            (EducationLevel.BachelorsDegree, "en"): "Bachelor's degree",
+            (EducationLevel.MastersDegree, "en"): "Master's degree",
+
+            (EducationLevel.TVET, "ru"): "Среднее профессиональное",
+            (EducationLevel.BachelorsDegree, "ru"): "Бакалавр",
+            (EducationLevel.MastersDegree, "ru"): "Магистр",
+        }[(education_place.level, self.lang)]
 
         if not first:
             self.write_line(r"\\")
 
         self.write_line(fr"""
             {education_place.then.year_to} &
-            \textbf{{\large{{{education_place.place}}}}} &
+            \textbf{{\large{{{education_place.place.to_string(self.lang)}}}}} &
             {level}
             \\
-            & {education_place.speciality}
+            & {education_place.speciality.to_string(self.lang)}
             \\
         """)
 
     def write_all_education_places(self) -> None:
-        self.write_line(r"\textbf{{\Large Education}}")
+        education_header = self.education_header.to_string(self.lang)
+        self.write_line(f"\\textbf{{\\Large {education_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
@@ -500,11 +565,16 @@ class LatexGenerator():
 
     def write_about(self) -> None:
         loves = make_sequence(
-            [", ", " and ", "."],
-            self.resume.applicant.hobbies,
+            self.separators[self.lang],
+            [
+                hobbie.to_string(self.lang)
+                for hobbie in self.resume.applicant.hobbies
+            ],
         )
 
-        self.write_line(r"\textbf{{\Large About}}")
+        about_header = self.about_header.to_string(self.lang)
+        hobbies_prefix = self.hobbies_prefix.to_string(self.lang)
+        self.write_line(f"\\textbf{{\\Large {about_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\vspace{1em}")
@@ -513,7 +583,7 @@ class LatexGenerator():
             \rightskip2.5cm\relax
             {self.resume.position.about.to_string(self.lang)}
 
-            I love to {loves}
+            {hobbies_prefix} {loves}
 
         }}""")
         self.write_line(r"\vspace{1.5em}")
@@ -624,184 +694,238 @@ me = Applicant(
                     We worked on accounting system for money transfers (Unistream, CONTACT, Western Union, KoronaPay) using Delphi and C++ as our primary programming languages paired with FoxPro database.
                     Even on half-time job I've learned a lot.
                 """),
-                ru="TODO",
+                ru=d("""
+                    Я начал работать TODO
+                """),
             ),
             achivements=[
                 t(
                     en="Improved performance of legacy report generation system",
-                    ru="TODO",
+                    ru="Улучшил производительность системы генерации отчетов",
                 ),
                 t(
                     en="Extended accounting system with client database module",
-                    ru="TODO",
+                    ru="Расширил систему учета TODO",
                 ),
                 t(
                     en="Added autocompletion feature to input forms",
-                    ru="TODO",
+                    ru="Добавил автодополнение в формы ввода",
                 ),
             ],
             keywords=[
-                "Delphi",
-                "C++",
-                "FoxPro",
+                s("Delphi"),
+                s("C++"),
+                s("FoxPro"),
             ],
         ),
         WorkingPlace(
-            place="Central Scientific Research Institute of Chemistry and Mechanics",
-            position="Software Developer (Computer Vision)",
+            place=s("Central Scientific Research Institute of Chemistry and Mechanics"),
+            position=s("Software Developer (Computer Vision)"),
             then=MonthInterval(Month(2014, 6), Month(2015, 4)),
-            description=d("""
+            description=s(d("""
                 It was a very interesting job with embedded devices, computer vision and a lot of creativity.
                 I've worked on classified goverment projects, so I can't tell the details.
-            """),
+            """)),
             achivements=[
-                "Developed a video translation module for computer vision system of unmanned aerial vehicle",
-                "Created a tool to monitor and control our embedded devices",
-                "Created it's mobile version with C++ and Android NDK",
-                "Trained a junior developer and taught him basics of computer vision",
+                s("Developed a video translation module for computer vision system of unmanned aerial vehicle"),
+                s("Created a tool to monitor and control our embedded devices"),
+                s("Created it's mobile version with C++ and Android NDK"),
+                s("Trained a junior developer and taught him basics of computer vision"),
             ],
             keywords=[
-                "C/C++",
-                "Python",
+                s("C/C++"),
+                s("Python"),
 
-                "Qt",
-                "OpenCV",
-                "Embedded Programming",
-                "Android NDK",
+                s("Qt"),
+                s("OpenCV"),
+                s("Embedded Programming"),
+                s("Android NDK"),
 
-                "Computer Vision",
+                s("Computer Vision"),
             ],
         ),
         WorkingPlace(
-            place="Paragon Software",
-            position="Software Developer",
+            place=s("Paragon Software"),
+            position=s("Software Developer"),
             then=MonthInterval(Month(2015, 4), Month(2016, 10)),
-            description=d("""
+            description=s(d("""
                 We have been creating educational software, such as interactive schoolbooks and interactive learning boards for Mathematics, Physics, Geographics, etc.
-            """),
+            """)),
             achivements=[
-                "Writed an integration system to convert existing e-books to our format, which allowed us to increase typists productivity",
-                "Created an internal package manager from scratch",
-                "Increased code coverage to about 100% in all projects",
-                "Mentored trainees and taught them until they became our junior developers",
+                s("Writed an integration system to convert existing e-books to our format, which allowed us to increase typists productivity"),
+                s("Created an internal package manager from scratch"),
+                s("Increased code coverage to about 100% in all projects"),
+                s("Mentored trainees and taught them until they became our junior developers"),
             ],
             keywords=[
-                "C++",
-                "Python",
-                "JavaScript/CoffeeScript",
-                "Node.js",
+                s("C++"),
+                s("Python"),
+                s("JavaScript/CoffeeScript"),
+                s("Node.js"),
 
-                "wxWidgets",
-                "Box2D",
-                "XPath",
-                "Selenium",
-                "Electron",
+                s("wxWidgets"),
+                s("Box2D"),
+                s("XPath"),
+                s("Selenium"),
+                s("Electron"),
 
-                "Data Mining",
+                s("Data Mining"),
             ],
         ),
         WorkingPlace(
-            place="Freelance",
-            position="Fullstack Web Developer",
+            place=s("Freelance"),
+            position=s("Fullstack Web Developer"),
             then=MonthInterval(Month(2017, 1), Month(2019, 4)),
-            description=d("""
+            description=s(d("""
                 I worked with customers from different countries on international freelance platform.
                 In the main I've accepted small tasks related to web, automation or data mining.
                 As a result in additional to getting a lot of skills I've learned time management and improved my communication skills.
-            """),
+            """)),
             achivements=[
-                "Created queue-based image processing system for DeepDream iOS application",
-                "Fixed minor issues in 30+ web sites",
-                "Wrote data mining tools and web scrappers for 20+ sources",
+                s("Created queue-based image processing system for DeepDream iOS application"),
+                s("Fixed minor issues in 30+ web sites"),
+                s("Wrote data mining tools and web scrappers for 20+ sources"),
             ],
             keywords=[
-                "Python",
-                "JavaScript/TypeScript",
-                "Bash",
+                s("Python"),
+                s("JavaScript/TypeScript"),
+                s("Bash"),
 
-                "React.js",
-                "Flask/Bottle",
+                s("React.js"),
+                s("Flask/Bottle"),
 
-                "Redis",
-                "PostgreSQL",
-                "MongoDB",
+                s("Redis"),
+                s("PostgreSQL"),
+                s("MongoDB"),
 
-                "Kafka",
-                "RabbitMQ",
+                s("Kafka"),
+                s("RabbitMQ"),
 
-                "Web Development",
-                "Automation",
-                "Data Mining",
+                s("Web Development"),
+                s("Automation"),
+                s("Data Mining"),
             ],
         ),
         WorkingPlace(
-            place="Polymedia",
-            position="Web/ETL Developer",
+            place=s("Polymedia"),
+            position=s("Web/ETL Developer"),
             then=MonthInterval(Month(2019, 4), None),
-            description=d("""
+            description=s(d("""
                 We created a buisness intelligence platform Visiology, integrated it with various data sources and customized it to customer needs.
                 I've learned a lot about databases, OLAP-cubes. Learned how to improve uncultivated development process and how to lead small teams.
-            """),
+            """)),
             achivements=[
-                "Improved development process and overall products quality by introducing gitflow, continous integration, style guides, code reviews, unit and smoke testing",
-                "Improved performance of XML parsing by creating specialized XML parser as Python Extension Module with Rust",
-                "Improved maintainability of several legact projects by rewriting from scratch and/or gradual refactoring",
-                "Created several forecasting models using machine learning",
-                "Mentored and trained a lot of junior Python and JavaScript developers and new employees",
-                "Led a team of four developers for half a month",
+                s("Improved development process and overall products quality by introducing gitflow, continous integration, style guides, code reviews, unit and smoke testing"),
+                s("Improved performance of XML parsing by creating specialized XML parser as Python Extension Module with Rust"),
+                s("Improved maintainability of several legact projects by rewriting from scratch and/or gradual refactoring"),
+                s("Created several forecasting models using machine learning"),
+                s("Mentored and trained a lot of junior Python and JavaScript developers and new employees"),
+                s("Led a team of four developers for half a month"),
             ],
             keywords=[
-                "Python",
-                "SQL",
-                "JavaScript",
+                s("Python"),
+                s("SQL"),
+                s("JavaScript"),
 
-                "Data Warehouse",
-                "OLAP",
+                s("Data Warehouse"),
+                s("OLAP"),
 
-                "Buisness Intelligence",
-                "Web Development",
-                "ETL",
+                s("Buisness Intelligence"),
+                s("Web Development"),
+                s("ETL"),
             ],
         ),
     ],
     languages=[
-        Language("Russian", LanguageLevel.Native),
-        Language("English", LanguageLevel.Intermediate),
-        Language("French", LanguageLevel.Beginner),
+        Language(
+            t(
+                en="Russian",
+                ru="Русский",
+            ),
+            LanguageLevel.Native,
+        ),
+        Language(
+            t(
+                en="English",
+                ru="Английский",
+            ),
+            LanguageLevel.Intermediate,
+        ),
+        Language(
+            t(
+                en="French",
+                ru="Французский",
+            ),
+            LanguageLevel.Beginner,
+        ),
+        Language(
+            t(
+                en="Esperanto",
+                ru="Эсперанто",
+            ),
+            LanguageLevel.Beginner,
+        ),
     ],
     skills=[
         t(
             en="time management (work-load handling, scheduling)",
-            ru="TODO",
+            ru="тайм-менеджмент",
         ),
         t(
             en="training/mentoring junior developers",
-            ru="TODO",
+            ru="обучение/менторство",
         ),
         t(
             en="gradual improvement of legacy code",
-            ru="TODO",
+            ru="последовательное улучшение легаси-кода",
         ),
     ],
     hobbies=[
-        "learning Romance languages",
-        "drawing hands with pen",
-        "playing guitar",
-        "reading tech books",
-        "using Haskell and Rust in pet-projects",
-        "writing compilers",
+        t(
+            en="learning romance languages",
+            ru="изучать романские языки",
+        ),
+        t(
+            en="drawing hands with pen",
+            ru="рисовать руки",
+        ),
+        t(
+            en="playing guitar",
+            ru="играть на гитаре",
+        ),
+        t(
+            en="reading tech books",
+            ru="читать техническую литературу",
+        ),
+        t(
+            en="using Haskell and Rust in pet-projects",
+            ru="использовать Haskell и Rust в пет-проектах",
+        ),
+        t(
+            en="writing compilers",
+            ru="писать компиляторы",
+        ),
     ],
     wishes=[
-        "Learning new domains",
-        "Working with awesome people",
-        "Creating awesome product",
+        t(
+            en="Learning new domains",
+            ru="Изучать новые предметные области",
+        ),
+        t(
+            en="Working with awesome people",
+            ru="Работать в крутой команде",
+        ),
+        t(
+            en="Creating awesome product",
+            ru="Создавать крутой продукт",
+        ),
     ],
 )
 
 
 # TODO: add years for working places
-# TODO: remove useless skills
 # TODO: use jinja templates
+# TODO: refactor internationalization-related code
 python_developer = Position(
     name=t(
         en="Python Developer",
@@ -813,7 +937,8 @@ python_developer = Position(
             I'm mostly Backend/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
         """),
         ru=d("""
-            TODO
+            У меня более 6 лет опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
+            В основном я занимаюсь разработкой бекенда и ETL с использованием Python, а также знаю JavaScript и немного SQL и C++.
         """),
     ),
     skills=[
