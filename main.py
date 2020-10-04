@@ -235,6 +235,11 @@ class LatexGenerator():
         ru="Образование",
     )
 
+    achivements_header: Text = t(
+        en="Achivements",
+        ru="Достижения",
+    )
+
     hobbies_prefix: Text = t(
         en="I love to",
         ru="Я люблю",
@@ -497,7 +502,8 @@ class LatexGenerator():
         self.write_line(working_place.description.to_string(self.lang))
         self.write_line("")
 
-        self.write_line(r"\textbf{Achivements}")
+        achivements_header = self.achivements_header.to_string(self.lang)
+        self.write_line(rf"\textbf{{{achivements_header}}}")
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\rightskip2.5cm\relax")
         self.write_line(r"\setlength\itemsep{0em}")
@@ -695,7 +701,8 @@ me = Applicant(
                     Even on half-time job I've learned a lot.
                 """),
                 ru=d("""
-                    Я начал работать TODO
+                    Я начал работать на полставки сразу после окончания школы, я занимался поддержкой системы учета для денежных переводов, использовал Delphi и C++ как основные языки в паре с БД FoxPro.
+                    Даже работая на полставки я многому научился.
                 """),
             ),
             achivements=[
@@ -705,7 +712,7 @@ me = Applicant(
                 ),
                 t(
                     en="Extended accounting system with client database module",
-                    ru="Расширил систему учета TODO",
+                    ru="Расширил систему учета модулем с базой клиентов",
                 ),
                 t(
                     en="Added autocompletion feature to input forms",
@@ -719,18 +726,42 @@ me = Applicant(
             ],
         ),
         WorkingPlace(
-            place=s("Central Scientific Research Institute of Chemistry and Mechanics"),
-            position=s("Software Developer (Computer Vision)"),
+            place=t(
+                en="Central Scientific Research Institute of Chemistry and Mechanics",
+                ru="Центральный научно-исследовательский институт химии и механики",
+            ),
+            position=t(
+                en="Software Developer (Computer Vision)",
+                ru="Разработчик CV",
+            ),
             then=MonthInterval(Month(2014, 6), Month(2015, 4)),
-            description=s(d("""
-                It was a very interesting job with embedded devices, computer vision and a lot of creativity.
-                I've worked on classified goverment projects, so I can't tell the details.
-            """)),
+            description=t(
+                en=d("""
+                    It was a very interesting job with embedded devices, computer vision and a lot of creativity.
+                    I've worked on classified goverment projects, so I can't tell the details.
+                """),
+                ru=d("""
+                    Это была очень интересная работа со встраиваемыми устройствами, компьютерным зрением и возможностью поработать с кучей железок.
+                    Подробная информация о проектах является гостайной, поэтому я не могу рассказать детали.
+                """),
+            ),
             achivements=[
-                s("Developed a video translation module for computer vision system of unmanned aerial vehicle"),
-                s("Created a tool to monitor and control our embedded devices"),
-                s("Created it's mobile version with C++ and Android NDK"),
-                s("Trained a junior developer and taught him basics of computer vision"),
+                t(
+                    en="Developed a video translation module for computer vision system of unmanned aerial vehicle",
+                    ru="Разработал модуль видеотранстялции для системы компьютерного зрения беспилотного аппарата",
+                ),
+                t(
+                    en="Created a tool to monitor and control our embedded devices",
+                    ru="Создал средство мониторинга и управления нашими встраиваемыми устройствами",
+                ),
+                t(
+                    en="Created it's mobile version with C++ and Android NDK",
+                    ru="Написал его мобильную версию с C++ и Android NDK",
+                ),
+                t(
+                    en="Trained a junior developer and taught him basics of computer vision",
+                    ru="Обучил младшего разработчика, дав ему основы разработки и компьютерного зрения",
+                ),
             ],
             keywords=[
                 s("C/C++"),
@@ -746,16 +777,36 @@ me = Applicant(
         ),
         WorkingPlace(
             place=s("Paragon Software"),
-            position=s("Software Developer"),
+            position=t(
+                en="Python/C++ Developer",
+                ru="Python/C++ разработчик",
+            ),
             then=MonthInterval(Month(2015, 4), Month(2016, 10)),
-            description=s(d("""
-                We have been creating educational software, such as interactive schoolbooks and interactive learning boards for Mathematics, Physics, Geographics, etc.
-            """)),
+            description=t(
+                en=d("""
+                    We have been creating educational software, such as interactive schoolbooks and interactive learning boards for Mathematics, Physics, Geographics, etc.
+                """),
+                ru=d("""
+                    Мы создавали образовательное ПО, такое как интерактивные учебники и интерактивные доски для преподавания математики, физики, географии и других предметов.
+                """),
+            ),
             achivements=[
-                s("Writed an integration system to convert existing e-books to our format, which allowed us to increase typists productivity"),
-                s("Created an internal package manager from scratch"),
-                s("Increased code coverage to about 100% in all projects"),
-                s("Mentored trainees and taught them until they became our junior developers"),
+                t(
+                    en="Writed an integration system to convert existing e-books to our format, which allowed us to increase typists productivity",
+                    ru="Реализовал автоматизированное конвертирование существующих электронных учебников в наш внутренний формат, что позволило улучшить производительность верстальщиков",
+                ),
+                t(
+                    en="Created an internal package manager from scratch",
+                    ru="Создал пакетный менеджер для внутреннего использования",
+                ),
+                t(
+                    en="Increased code coverage to about 100\% in all projects",
+                    ru="Увеличил покрытие кода до приблизительно 100\% во всех проектах",
+                ),
+                t(
+                    en="Mentored trainees and taught them until they became our junior developers",
+                    ru="Наставлял стажеров и обучал их до тех пор, пока они не присоединились к нашей команде в качестве младших разработчиков",
+                ),
             ],
             keywords=[
                 s("C++"),
@@ -773,8 +824,8 @@ me = Applicant(
             ],
         ),
         WorkingPlace(
-            place=s("Freelance"),
-            position=s("Fullstack Web Developer"),
+            place=s("Фриланс"),
+            position=s("Фуллстек разработчик"),
             then=MonthInterval(Month(2017, 1), Month(2019, 4)),
             description=s(d("""
                 I worked with customers from different countries on international freelance platform.
@@ -924,6 +975,9 @@ me = Applicant(
 
 
 # TODO: add years for working places
+# TODO: restyle keywords
+# TODO: improve keyword list
+
 # TODO: use jinja templates
 # TODO: refactor internationalization-related code
 python_developer = Position(
