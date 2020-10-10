@@ -1001,12 +1001,6 @@ me = Applicant(
 )
 
 
-# TODO: add years for working places
-# TODO: restyle keywords
-# TODO: improve keyword list
-
-# TODO: use jinja templates
-# TODO: refactor internationalization-related code
 python_developer = Position(
     name=t(
         en="Python Developer",
