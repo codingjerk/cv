@@ -859,19 +859,46 @@ me = Applicant(
         ),
         WorkingPlace(
             place=s("Polymedia"),
-            position=s("Web/ETL Developer"),
+            position=t(
+                en="Web/ETL Developer",
+                ru="Python разработчик",
+            ),
             then=MonthInterval(Month(2019, 4), None),
-            description=s(d("""
-                We created a buisness intelligence platform Visiology, integrated it with various data sources and customized it to customer needs.
-                I've learned a lot about databases, OLAP-cubes. Learned how to improve uncultivated development process and how to lead small teams.
-            """)),
+            description=t(
+                en=d("""
+                    We created a buisness intelligence platform Visiology, integrated it with various data sources and customized it to customer needs.
+                    I've learned a lot about databases, OLAP-cubes. Learned how to improve uncultivated development process and how to lead small teams.
+                """),
+                ru=d("""
+                    Мы создавали BI-платформу Visiology, интегрировали её с различными источниками данных и кастомизировали под нужды заказчиков.
+                    Я узнал многое о базах данных, в том числе многомерных. Удалось научиться улучению неразвитого процесса разработки и управлению маленькими командами.
+                """),
+            ),
             achivements=[
-                s("Improved development process and overall products quality by introducing gitflow, continous integration, style guides, code reviews, unit and smoke testing"),
-                s("Improved performance of XML parsing by creating specialized XML parser as Python Extension Module with Rust"),
-                s("Improved maintainability of several legact projects by rewriting from scratch and/or gradual refactoring"),
-                s("Created several forecasting models using machine learning"),
-                s("Mentored and trained a lot of junior Python and JavaScript developers and new employees"),
-                s("Led a team of four developers for half a month"),
+                t(
+                    en="Improved development process and overall products quality by introducing gitflow, continous integration, style guides, code reviews, unit and smoke testing",
+                    ru="Улучшил процесс разработки введением gitflow, CI, стайлгайдов, код-ревью, модульного и смоук тестирования",
+                ),
+                t(
+                    en="Improved performance of XML parsing by creating specialized XML parser as Python Extension Module with Rust",
+                    ru="Увелиличил производительность парсинга XML созданием специализированного парсера для Python на Rust",
+                ),
+                t(
+                    en="Improved maintainability of several legacy projects by rewriting from scratch and/or gradual refactoring",
+                    ru="Улучшил качество нескольких легаси проектов переписав их с нуля или постепенным рефакторингом",
+                ),
+                t(
+                    en="Created several forecasting models using machine learning",
+                    ru="Создал несколько прогнозных моделей с применением машинного обучения",
+                ),
+                t(
+                    en="Mentored and trained a lot of junior Python and JavaScript developers and new employees",
+                    ru="Наставлял и обучал младших разработчиков и новых работников",
+                ),
+                t(
+                    en="Led a team of four developers for half a month",
+                    ru="Управлял командой из четырёх разработчиков пол месяца",
+                ),
             ],
             keywords=[
                 s("Python"),
