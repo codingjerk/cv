@@ -496,13 +496,16 @@ class LatexGenerator():
             \item[]
             \textbf{{\large {working_place.position.to_string(self.lang)}}}
 
-            \textbf{{{working_place.place.to_string(self.lang)}}}
+            {{\large {working_place.place.to_string(self.lang)}}}
         """)
 
+        self.write_line(r"\vspace{0.5em}")
         self.write_line(working_place.description.to_string(self.lang))
         self.write_line("")
 
         achivements_header = self.achivements_header.to_string(self.lang)
+        self.write_line(r"\vspace{1.0em}")
+        self.write_line(r"\begin{minipage}{\textwidth}")
         self.write_line(rf"\textbf{{{achivements_header}}}")
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\rightskip2.5cm\relax")
@@ -510,6 +513,7 @@ class LatexGenerator():
         for achivement in working_place.achivements:
             self.write_line(rf"\item[$\bullet$] {achivement.to_string(self.lang)}")
         self.write_line(r"\end{itemize}")
+        self.write_line(r"\end{minipage}")
 
     def write_all_working_places(self) -> None:
         experience_header = self.experience_header.to_string(self.lang)
@@ -1034,7 +1038,7 @@ python_developer = Position(
             I'm mostly Backend/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
         """),
         ru=d("""
-            У меня более 6 лет опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
+            У меня более 6 лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
             В основном я занимаюсь разработкой бекенда и ETL с использованием Python, а также знаю JavaScript и немного SQL и C++.
         """),
     ),
