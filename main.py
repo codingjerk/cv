@@ -241,12 +241,12 @@ class LatexGenerator():
     )
 
     hobbies_prefix: Text = t(
-        en="I love to",
+        en="I love",
         ru="Я люблю",
     )
 
     present_caption: Text = t(
-        en="present moment",
+        en="the present moment",
         ru="настоящее время",
     )
 
@@ -465,7 +465,7 @@ class LatexGenerator():
 
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\setlength\itemsep{0em}")
-        self.write_line(r"\rightskip2.5cm\relax")
+        self.write_line(r"\rightskip2.75cm\relax")
 
         skills = make_sequence(
             self.separators[self.lang],
@@ -756,9 +756,9 @@ me = Applicant(
             then=MonthInterval(Month(2010, 7), Month(2012, 12)),
             description=t(
                 en=d("""
-                    I started working here half-time, just after I graduated from a highschool.
-                    We worked on accounting system for money transfers (Unistream, CONTACT, Western Union, KoronaPay) using Delphi and C++ as our primary programming languages paired with FoxPro database.
-                    Even on half-time job I've learned a lot.
+                    I started working here half-time, just after I graduated from high school.
+                    We worked on an accounting system for money transfers (Unistream, CONTACT, Western Union, KoronaPay) using Delphi and C++ as our primary programming languages paired with FoxPro database.
+                    Even on a half-time job, I've learned a lot.
                 """),
                 ru=d("""
                     Я начал работать на полставки сразу после окончания школы, я занимался поддержкой системы учета для денежных переводов, использовал Delphi и C++ как основные языки в паре с БД FoxPro.
@@ -767,15 +767,15 @@ me = Applicant(
             ),
             achivements=[
                 t(
-                    en="Improved performance of legacy report generation system",
+                    en="Improved performance of a legacy report generation system",
                     ru="Улучшил производительность системы генерации отчетов",
                 ),
                 t(
-                    en="Extended accounting system with client database module",
+                    en="Extended the accounting system with a client database module",
                     ru="Расширил систему учета модулем с базой клиентов",
                 ),
                 t(
-                    en="Added autocompletion feature to input forms",
+                    en="Added auto-completion to input forms",
                     ru="Добавил автодополнение в формы ввода",
                 ),
             ],
@@ -797,8 +797,8 @@ me = Applicant(
             then=MonthInterval(Month(2014, 6), Month(2015, 4)),
             description=t(
                 en=d("""
-                    It was a very interesting job with embedded devices, computer vision and a lot of creativity.
-                    I've worked on classified goverment projects, so I can't tell the details.
+                    It was an exciting job with embedded devices, computer vision and much creativity.
+                    I've worked on classified government projects, so I can't tell the details.
                 """),
                 ru=d("""
                     Это была очень интересная работа со встраиваемыми устройствами, компьютерным зрением и возможностью поработать с кучей железок.
@@ -807,7 +807,7 @@ me = Applicant(
             ),
             achivements=[
                 t(
-                    en="Developed a video translation module for computer vision system of unmanned aerial vehicle",
+                    en="Developed a video translation module for a computer vision system of an uncrewed aerial vehicle",
                     ru="Разработал модуль видеотранстялции для системы компьютерного зрения беспилотного аппарата",
                 ),
                 t(
@@ -815,11 +815,11 @@ me = Applicant(
                     ru="Создал средство мониторинга и управления нашими встраиваемыми устройствами",
                 ),
                 t(
-                    en="Created it's mobile version with C++ and Android NDK",
+                    en="Made its mobile version with C++ and Android NDK",
                     ru="Написал его мобильную версию с C++ и Android NDK",
                 ),
                 t(
-                    en="Trained a junior developer and taught him basics of computer vision",
+                    en="Trained a junior developer and taught him the basics of computer vision",
                     ru="Обучил младшего разработчика, дав ему основы разработки и компьютерного зрения",
                 ),
             ],
@@ -852,7 +852,7 @@ me = Applicant(
             ),
             achivements=[
                 t(
-                    en="Writed an integration system to convert existing e-books to our format, which allowed us to increase typists productivity",
+                    en="I wrote an integration system to convert existing e-books to our format, which allowed us to increase typists productivity",
                     ru="Реализовал автоматизированное конвертирование существующих электронных учебников в наш внутренний формат, что позволило улучшить производительность верстальщиков",
                 ),
                 t(
@@ -895,9 +895,9 @@ me = Applicant(
             then=MonthInterval(Month(2017, 1), Month(2019, 4)),
             description=t(
                 en=d("""
-                    I worked with customers from different countries on international freelance platform.
-                    In the main I've accepted small tasks related to web, automation or data mining.
-                    As a result in additional to getting a lot of skills I've learned time management and improved my communication skills.
+                    I worked with customers from different countries on an international freelance platform.
+                    In the main, I've accepted small tasks related to web, automation or data mining.
+                    As a result, in addition to getting many skills, I've learned time management and improved my communication skills.
                 """),
                 ru=d("""
                     Я работал с зарубежными заказчиками на Upwork.
@@ -907,7 +907,7 @@ me = Applicant(
             ),
             achivements=[
                 t(
-                    en="Created queue-based image processing system for DeepDream iOS application",
+                    en="I created a queue-based image processing system for the DeepDream iOS application",
                     ru="Создал систему обработки изображений для бекенда iOS-приложения DeepDream",
                 ),
                 t(
@@ -948,8 +948,8 @@ me = Applicant(
             then=MonthInterval(Month(2019, 4), None),
             description=t(
                 en=d("""
-                    We created a buisness intelligence platform Visiology, integrated it with various data sources and customized it to customer needs.
-                    I've learned a lot about databases, OLAP-cubes. Learned how to improve uncultivated development process and how to lead small teams.
+                    We created a business intelligence platform Visiology, integrated it with various data sources and customized it to customer needs.
+                    I've learned a lot about databases, OLAP-cubes, learned how to improve the uncultivated development process and how to lead small teams.
                 """),
                 ru=d("""
                     Мы создавали BI-платформу Visiology, интегрировали её с различными источниками данных и кастомизировали под нужды заказчиков.
@@ -958,15 +958,15 @@ me = Applicant(
             ),
             achivements=[
                 t(
-                    en="Improved development process and overall products quality by introducing gitflow, continous integration, style guides, code reviews, unit and smoke testing",
-                    ru="Улучшил процесс разработки введением gitflow, CI, стайлгайдов, код-ревью, модульного и смоук тестирования",
+                    en="Improved development process and overall products quality by introducing git-flow, continuous integration, style guides, code reviews, unit and smoke testing",
+                    ru="Улучшил процесс разработки введением git-flow, CI, стайлгайдов, код-ревью, модульного и смоук тестирования",
                 ),
                 t(
                     en="Improved performance of XML parsing by creating specialized XML parser as Python Extension Module with Rust",
                     ru="Увелиличил производительность парсинга XML созданием специализированного парсера для Python на Rust",
                 ),
                 t(
-                    en="Improved maintainability of several legacy projects by rewriting from scratch and/or gradual refactoring",
+                    en="Improved maintainability of several legacy projects by rewriting from scratch and gradual refactoring",
                     ru="Улучшил качество нескольких легаси проектов переписав их с нуля или постепенным рефакторингом",
                 ),
                 t(
@@ -1046,7 +1046,7 @@ me = Applicant(
             ru="изучать романские языки",
         ),
         t(
-            en="drawing hands with pen",
+            en="drawing hands with a pen",
             ru="рисовать руки",
         ),
         t(
@@ -1090,11 +1090,11 @@ python_developer = Position(
     ),
     about=t(
         en=d("""
-            I have over 6 years of experience as a software engineer and have worked at both small and large organizations.
-            I'm mostly Backend/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
+            I have over six years of experience as a software engineer and have worked at small and large organizations.
+            I'm mostly a Back-end/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
         """),
         ru=d("""
-            У меня более 6 лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
+            У меня более шесть лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
             В основном я занимаюсь разработкой бекенда и ETL с использованием Python, а также знаю JavaScript и немного SQL и C++.
         """),
     ),
@@ -1112,6 +1112,33 @@ python_developer = Position(
 )
 
 
+frontend_developer = Position(
+    name=t(
+        en="Frontend Developer",
+        ru="Фронтенд разработчик",
+    ),
+    about=t(
+        en=d("""
+            I have over six years of experience as a software engineer and have worked at small and large organizations.
+            At my work I'm using modern JavaScript and for some of my pet projects TypeScript. Also I know Python and some SQL and C++.
+        """),
+        ru=d("""
+            У меня более шесть лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
+            На работе я использую современный JavaScript, а для некоторых из своих пет проектов TypeScript. Также я знаю Python и немного SQL и C++.
+        """),
+    ),
+    skills=[
+        s("typescript"),
+        s("javascript"),
+        s("react"),
+        s("redux"),
+        s("webpack"),
+        s("jest"),
+        s("git"),
+    ],
+)
+
+
 if __name__ == "__main__":
-    latex = Resume(me, python_developer).to_latex(lang="ru")
+    latex = Resume(me, python_developer).to_latex(lang="en")
     print(latex)
