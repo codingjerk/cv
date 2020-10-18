@@ -292,7 +292,7 @@ class LatexGenerator():
         email = self.resume.applicant.contacts.email
         self.write_link_with_icon(
             url=f"mailto:{email}",
-            icon="phone",
+            icon="envelope",
             text=email,
         )
 
