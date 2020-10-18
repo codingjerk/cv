@@ -245,6 +245,42 @@ class LatexGenerator():
         ru="Я люблю",
     )
 
+    present_caption: Text = t(
+        en="present moment",
+        ru="настоящее время",
+    )
+
+    month_names = {
+        "en": {
+            1: "January",
+            2: "February",
+            3: "March",
+            4: "April",
+            5: "May",
+            6: "Juny",
+            7: "July",
+            8: "August",
+            9: "September",
+            10: "October",
+            11: "November",
+            12: "December",
+        },
+        "ru": {
+            1: "Январь",
+            2: "Февраль",
+            3: "Март",
+            4: "Апрель",
+            5: "Май",
+            6: "Июнь",
+            7: "Июль",
+            8: "Август",
+            9: "Сентябрь",
+            10: "Октябрь",
+            11: "Ноябрь",
+            12: "Декабрь",
+        },
+    }
+
     separators = {
         "en": [", ", " and ", "."],
         "ru": [", ", " и ", "."],
@@ -425,7 +461,7 @@ class LatexGenerator():
         self.write_line(f"\\textbf{{\\Large {skills_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
-        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\vspace{0.4em}")
 
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\setlength\itemsep{0em}")
@@ -473,7 +509,7 @@ class LatexGenerator():
         self.write_line(f"\\textbf{{\\Large {languages_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
-        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\vspace{0.4em}")
 
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\rightskip2.5cm\relax")
@@ -488,6 +524,20 @@ class LatexGenerator():
         self.write_line(r"\end{itemize}")
         self.write_line(r"\vspace{1.5em}")
 
+    def write_month(self, month: Optional[Month]) -> None:
+        if month is None:
+            self.write_line(self.present_caption.to_string(self.lang))
+            return
+
+        month_name = self.month_names[self.lang][month.month]
+
+        self.write_line(f"{month_name} {month.year}")
+
+    def write_then(self, then: MonthInterval) -> None:
+        self.write_month(then.month_from)
+        self.write_line("—")
+        self.write_month(then.month_to)
+
     def write_working_place(self, working_place: WorkingPlace, first: bool) -> None:
         if not first:
             self.write_line(r"\vspace{1em}")
@@ -496,8 +546,14 @@ class LatexGenerator():
             \item[]
             \textbf{{\large {working_place.position.to_string(self.lang)}}}
 
-            {{\large {working_place.place.to_string(self.lang)}}}
-        """)
+            {{\large {working_place.place.to_string(self.lang)}}}"""
+        )
+
+        self.write(r"\hspace{0.5em} {\scriptsize (")
+        self.write_then(working_place.then)
+        self.write(")}")
+        self.write_line("")
+        self.write_line("")
 
         self.write_line(r"\vspace{0.5em}")
         self.write_line(working_place.description.to_string(self.lang))
@@ -520,7 +576,7 @@ class LatexGenerator():
         self.write_line(f"\\textbf{{\\Large {experience_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
-        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\vspace{0.4em}")
 
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\rightskip2.5cm\relax")
@@ -561,7 +617,7 @@ class LatexGenerator():
         self.write_line(f"\\textbf{{\\Large {education_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
-        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\vspace{1.5em}")
 
         self.write_line(r"\leftskip0.7cm\relax")
         self.write_line(r"\begin{tabularx}{42em}{ r X r }")
@@ -587,7 +643,7 @@ class LatexGenerator():
         self.write_line(f"\\textbf{{\\Large {about_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
-        self.write_line(r"\vspace{1em}")
+        self.write_line(r"\vspace{1.25em}")
         self.write_line(rf"""{{
             \leftskip0.95cm\relax
             \rightskip2.5cm\relax
