@@ -824,18 +824,40 @@ me = Applicant(
             ],
         ),
         WorkingPlace(
-            place=s("Фриланс"),
-            position=s("Фуллстек разработчик"),
+            place=t(
+                en="Freelance",
+                ru="Фриланс",
+            ),
+            position=t(
+                en="Fullstack Developer",
+                ru="Фуллстек разработчик",
+            ),
             then=MonthInterval(Month(2017, 1), Month(2019, 4)),
-            description=s(d("""
-                I worked with customers from different countries on international freelance platform.
-                In the main I've accepted small tasks related to web, automation or data mining.
-                As a result in additional to getting a lot of skills I've learned time management and improved my communication skills.
-            """)),
+            description=t(
+                en=d("""
+                    I worked with customers from different countries on international freelance platform.
+                    In the main I've accepted small tasks related to web, automation or data mining.
+                    As a result in additional to getting a lot of skills I've learned time management and improved my communication skills.
+                """),
+                ru=d("""
+                    Я работал с зарубежными заказчиками на Upwork.
+                    В основном я выполнял небольшие задачи связанные с вебом, автоматизацией или дата майнингом.
+                    В результате я сильно расширил свои знания в ширину, научился тайм-менеджменту и улучшил навыки коммуникации.
+                """),
+            ),
             achivements=[
-                s("Created queue-based image processing system for DeepDream iOS application"),
-                s("Fixed minor issues in 30+ web sites"),
-                s("Wrote data mining tools and web scrappers for 20+ sources"),
+                t(
+                    en="Created queue-based image processing system for DeepDream iOS application",
+                    ru="Создал систему обработки изображений для бекенда iOS-приложения DeepDream",
+                ),
+                t(
+                    en="Fixed different issues in 30+ web sites",
+                    ru="Внёс множество исправлений на 30+ сайтах",
+                ),
+                t(
+                    en="Wrote data mining tools and web scrapers for 20+ sources",
+                    ru="Написал средства сбора данных и веб-скраперы для 20+ источников",
+                ),
             ],
             keywords=[
                 s("Python"),
