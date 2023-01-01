@@ -697,12 +697,12 @@ me = Applicant(
     ),
     address=Address(
         country=t(
-            en="Russia",
-            ru="Россия",
+            en="Thailand",
+            ru="Таиланд",
         ),
         city=t(
-            en="Moscow",
-            ru="Москва",
+            en="Bangkok",
+            ru="Бангкок",
         ),
     ),
     education=[
@@ -1009,19 +1009,26 @@ me = Applicant(
                 en="English",
                 ru="Английский",
             ),
-            LanguageLevel.Intermediate,
+            LanguageLevel.Fluent,
         ),
         Language(
             t(
                 en="French",
                 ru="Французский",
             ),
-            LanguageLevel.Beginner,
+            LanguageLevel.Intermediate,
         ),
         Language(
             t(
                 en="Esperanto",
                 ru="Эсперанто",
+            ),
+            LanguageLevel.Beginner,
+        ),
+        Language(
+            t(
+                en="Thai",
+                ru="Тайский",
             ),
             LanguageLevel.Beginner,
         ),
@@ -1090,51 +1097,26 @@ python_developer = Position(
     ),
     about=t(
         en=d("""
-            I have over six years of experience as a software engineer and have worked at small and large organizations.
-            I'm mostly a Back-end/ETL developer with knowledge of Python, JavaScript and some SQL and C++.
+            I have over nine years of experience as a software engineer and have worked at small and large organizations.
+            I'm mostly a back-end/system developer with knowledge of Python, JavaScript and some SQL and C++.
         """),
         ru=d("""
-            У меня более шести лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
+            У меня более девяти лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
             В основном я занимаюсь разработкой бекенда и ETL с использованием Python, а также знаю JavaScript и немного SQL и C++.
         """),
     ),
     skills=[
-        s("python"),
-        s("mypy/typing"),
-        s("REST/RESUful API"),
-        s("postgreSQL"),
-        s("linux"),
-        s("docker"),
-        s("git"),
+        s("Python"),
+        s("FastAPI"),
+        s("PostgreSQL"),
+        s("Linux"),
+        s("Docker"),
+        s("Git"),
+        s("MyPy/typing"),
         s("automated testing"),
         s("continious integration"),
-    ],
-)
-
-
-frontend_developer = Position(
-    name=t(
-        en="Frontend Developer",
-        ru="Фронтенд разработчик",
-    ),
-    about=t(
-        en=d("""
-            I have over six years of experience as a software engineer and have worked at small and large organizations.
-            At my work I'm using modern JavaScript and for some of my pet projects TypeScript. Also I know Python and some SQL and C++.
-        """),
-        ru=d("""
-            У меня более шести лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
-            На работе я использую современный JavaScript, а для некоторых из своих пет проектов TypeScript. Также я знаю Python и немного SQL и C++.
-        """),
-    ),
-    skills=[
-        s("typescript"),
-        s("javascript"),
-        s("react"),
-        s("redux"),
-        s("webpack"),
-        s("jest"),
-        s("git"),
+        s("JavaScript"),
+        s("SQL"),
     ],
 )
 
