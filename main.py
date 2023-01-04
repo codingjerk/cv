@@ -241,8 +241,8 @@ class LatexGenerator():
     )
 
     hobbies_prefix: Text = t(
-        en="I love",
-        ru="Я люблю",
+        en="As a person, I love",
+        ru="Из других увлечений, я люблю",
     )
 
     present_caption: Text = t(
@@ -573,6 +573,7 @@ class LatexGenerator():
 
     def write_all_working_places(self) -> None:
         experience_header = self.experience_header.to_string(self.lang)
+        self.write_line(r"\newpage")
         self.write_line(f"\\textbf{{\\Large {experience_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
@@ -614,6 +615,7 @@ class LatexGenerator():
 
     def write_all_education_places(self) -> None:
         education_header = self.education_header.to_string(self.lang)
+        self.write_line(r"\newpage")
         self.write_line(f"\\textbf{{\\Large {education_header}}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
@@ -945,7 +947,7 @@ me = Applicant(
                 en="Web/ETL Developer",
                 ru="Python разработчик",
             ),
-            then=MonthInterval(Month(2019, 4), None),
+            then=MonthInterval(Month(2019, 4), Month(2021, 1)),
             description=t(
                 en=d("""
                     We created a business intelligence platform Visiology, integrated it with various data sources and customized it to customer needs.
@@ -993,6 +995,53 @@ me = Applicant(
                 s("Buisness Intelligence"),
                 s("Web Development"),
                 s("ETL"),
+            ],
+        ),
+        WorkingPlace(
+            place=s("Qrator Labs"),
+            position=t(
+                en="Backend Developer",
+                ru="Python разработчик",
+            ),
+            then=MonthInterval(Month(2021, 2), None),
+            description=t(
+                en=d("""
+                    I'm working in Qrator.Radar — team, providing realtime-monitoring of BGP-networks.
+                """),
+                ru=d("""
+                    Я работаю в Qrator.Radar, команде, предоставляющей realtime-мониторинг BGP-сетей.
+                """),
+            ),
+            achivements=[
+                t(
+                    en="Designed and implemented storage of realtime events, carried high performance of read and write queries",
+                    ru="Спроектировал и написал хранилище realtime событий, обеспечил высокую производительность загрузки и выборки данных",
+                ),
+                t(
+                    en="Designed easy-to-use and extendable notification service with telemetry support and bunch of monitoring tools with it",
+                    ru="Спроектировал лёгкий в использовании и расширяемый сервис нотификаций с телеметрией и набор микросервисов для мониторинга с его помощью",
+                ),
+                t(
+                    en="Wrote a bunch of APIs and microservices for data loading and processing",
+                    ru="Написал множество API и микросервисов для загрузки и обработки данных",
+                ),
+                t(
+                    en="Improved CI/CD pipelines in the team by creating easy-to-use templates for GitLab CI",
+                    ru="Улучшил CI/CD пайплайны в команде, создав лёгкие в использовании шаблоны для GitLab CI",
+                ),
+                t(
+                    en="Created onbuild images for multistage builds to simplify and speed up builds of Docker images for Python projects and reduce resulting image size",
+                    ru="Создал onbuild образы для multistage сборки, что упростило и ускорило сборку Docker образов для Python проектов, а также сделало итоговые образы меньше",
+                ),
+            ],
+            keywords=[
+                s("Python"),
+                s("SQL"),
+                s("TypeScript"),
+
+                s("Networks"),
+                s("BGP"),
+                s("CI/CD"),
             ],
         ),
     ],
@@ -1099,10 +1148,16 @@ python_developer = Position(
         en=d("""
             I have over nine years of experience as a software engineer and have worked at small and large organizations.
             I'm mostly a back-end/system developer with knowledge of Python, JavaScript and some SQL and C++.
+
+            Programming is my hobby too, you can see my pet projects, open-source contribution and other code
+            in my GitHub.
         """),
         ru=d("""
             У меня более девяти лет комерческого опыта разработки програмного обеспечения, я работал как в маленьких так и в больших командах.
             В основном я занимаюсь разработкой бекенда и ETL с использованием Python, а также знаю JavaScript и немного SQL и C++.
+
+            Программирование это также и моё хобби, мои pet-проекты, вклад в open-source и просто код
+            можно посмотреть в моём GitHub.
         """),
     ),
     skills=[
