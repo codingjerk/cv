@@ -4,7 +4,9 @@
 
 ## Get latest PDF
 
-Available at [Releases page](https://github.com/codingjerk/cv/releases).
+[![](https://img.shields.io/badge/Latest_PDF-Download-brightgreen?style=for-the-badge)](https://github.com/codingjerk/cv/releases/download/v2/cv_denis_gruzdev.pdf)
+
+Also, it's available at [Releases page](https://github.com/codingjerk/cv/releases).
 
 ## Build it yourself
 
