@@ -1169,7 +1169,7 @@ python_developer = Position(
         s("Git"),
         s("MyPy/typing"),
         s("automated testing"),
-        s("continious integration"),
+        s("continuous integration"),
         s("JavaScript"),
         s("SQL"),
     ],
