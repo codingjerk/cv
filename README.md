@@ -1,4 +1,4 @@
-# Circum Vitae
+# Curriculum Vitae
 
 > My personal CV (résumé) generated with power of Python and LaTeX
 
