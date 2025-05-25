@@ -92,7 +92,7 @@ class WorkingPlace:
     position: Text
     then: MonthInterval
     description: Text
-    achivements: List[Text]
+    achievements: List[Text]
     keywords: List[Text]
 
 
@@ -235,8 +235,8 @@ class LatexGenerator():
         ru="Образование",
     )
 
-    achivements_header: Text = t(
-        en="Achivements",
+    achievements_header: Text = t(
+        en="Achievements",
         ru="Достижения",
     )
 
@@ -257,7 +257,7 @@ class LatexGenerator():
             3: "March",
             4: "April",
             5: "May",
-            6: "Juny",
+            6: "June",
             7: "July",
             8: "August",
             9: "September",
@@ -559,15 +559,15 @@ class LatexGenerator():
         self.write_line(working_place.description.to_string(self.lang))
         self.write_line("")
 
-        achivements_header = self.achivements_header.to_string(self.lang)
+        achievements_header = self.achievements_header.to_string(self.lang)
         self.write_line(r"\vspace{1.0em}")
         self.write_line(r"\begin{minipage}{\textwidth}")
-        self.write_line(rf"\textbf{{{achivements_header}}}")
+        self.write_line(rf"\textbf{{{achievements_header}}}")
         self.write_line(r"\begin{itemize}")
         self.write_line(r"\rightskip2.5cm\relax")
         self.write_line(r"\setlength\itemsep{0em}")
-        for achivement in working_place.achivements:
-            self.write_line(rf"\item[$\bullet$] {achivement.to_string(self.lang)}")
+        for achievement in working_place.achievements:
+            self.write_line(rf"\item[$\bullet$] {achievement.to_string(self.lang)}")
         self.write_line(r"\end{itemize}")
         self.write_line(r"\end{minipage}")
 
@@ -767,7 +767,7 @@ me = Applicant(
                     Даже работая на полставки я многому научился.
                 """),
             ),
-            achivements=[
+            achievements=[
                 t(
                     en="Improved performance of a legacy report generation system",
                     ru="Улучшил производительность системы генерации отчетов",
@@ -807,7 +807,7 @@ me = Applicant(
                     Подробная информация о проектах является гостайной, поэтому я не могу рассказать детали.
                 """),
             ),
-            achivements=[
+            achievements=[
                 t(
                     en="Developed a video translation module for a computer vision system of an uncrewed aerial vehicle",
                     ru="Разработал модуль видеотранстялции для системы компьютерного зрения беспилотного аппарата",
@@ -852,7 +852,7 @@ me = Applicant(
                     Мы создавали образовательное ПО, такое как интерактивные учебники и интерактивные доски для преподавания математики, физики, географии и других предметов.
                 """),
             ),
-            achivements=[
+            achievements=[
                 t(
                     en="I wrote an integration system to convert existing e-books to our format, which allowed us to increase typists productivity",
                     ru="Реализовал автоматизированное конвертирование существующих электронных учебников в наш внутренний формат, что позволило улучшить производительность верстальщиков",
@@ -907,7 +907,7 @@ me = Applicant(
                     В результате я сильно расширил свои знания в ширину, научился тайм-менеджменту и улучшил навыки коммуникации.
                 """),
             ),
-            achivements=[
+            achievements=[
                 t(
                     en="I created a queue-based image processing system for the DeepDream iOS application",
                     ru="Создал систему обработки изображений для бекенда iOS-приложения DeepDream",
@@ -958,7 +958,7 @@ me = Applicant(
                     Я узнал многое о базах данных, в том числе многомерных. Удалось научиться улучению неразвитого процесса разработки и управлению маленькими командами.
                 """),
             ),
-            achivements=[
+            achievements=[
                 t(
                     en="Improved development process and overall products quality by introducing git-flow, continuous integration, style guides, code reviews, unit and smoke testing",
                     ru="Улучшил процесс разработки введением git-flow, CI, стайлгайдов, код-ревью, модульного и смоук тестирования",
@@ -1012,7 +1012,7 @@ me = Applicant(
                     Я работаю в Qrator.Radar, команде, предоставляющей realtime-мониторинг BGP-сетей.
                 """),
             ),
-            achivements=[
+            achievements=[
                 t(
                     en="Designed and implemented storage of realtime events, carried high performance of read and write queries",
                     ru="Спроектировал и написал хранилище realtime событий, обеспечил высокую производительность загрузки и выборки данных",
