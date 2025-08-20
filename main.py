@@ -33,9 +33,8 @@ class Contacts:
     email: str
     phone: str
     github: str
-    gitlab: str
-    skype: str
     linkedin: str
+    youtube: str
     web: str
 
     def beauty_phone(self) -> str:
@@ -332,6 +331,14 @@ class LatexGenerator():
             text=email,
         )
 
+    def write_youtube(self) -> None:
+        channel = self.resume.applicant.contacts.youtube
+        self.write_link_with_icon(
+            url=f"youtube.com/@{channel}",
+            icon="youtube",
+            text=channel,
+        )
+
     def write_text_with_icon(self, icon: str, text: str) -> None:
         self.write(r"\faicon{%s} & %s" % (icon, text))
 
@@ -400,16 +407,11 @@ class LatexGenerator():
         self.write_line("&")
         self.write_github()
         self.write_line("&")
-        self.write_linkedin()
+        self.write_youtube()
         self.write_line(r"\\")
 
         self.write_phone()
         self.write_line("&")
-        self.write_gitlab()
-        self.write_line("&")
-        self.write_skype()
-        self.write_line(r"\\")
-
         self.write_email()
         self.write_line("&")
         self.write_web()
@@ -690,12 +692,11 @@ me = Applicant(
     ),
     contacts=Contacts(
         email="codingjerk@gmail.com",
-        phone="79999767890",
+        phone="79951142069",
         github="codingjerk",
-        gitlab="codingjerk",
-        skype="live:codingjerk",
         linkedin="codingjerk",
-        web="codingjerk.dev",
+        youtube="codingjerk",
+        web="cj.dog",
     ),
     address=Address(
         country=t(
