@@ -354,20 +354,6 @@ class LatexGenerator():
             text=username,
         )
 
-    def write_gitlab(self) -> None:
-        username = self.resume.applicant.contacts.gitlab
-        self.write_link_with_icon(
-            url=f"https://gitlab.com/{username}",
-            icon="gitlab",
-            text=username,
-        )
-
-    def write_skype(self) -> None:
-        self.write_text_with_icon(
-            icon="skype",
-            text=self.resume.applicant.contacts.skype,
-        )
-
     def write_linkedin(self) -> None:
         username = self.resume.applicant.contacts.linkedin
         self.write_link_with_icon(
@@ -396,7 +382,7 @@ class LatexGenerator():
     def write_contacts(self) -> None:
         contacts_header = self.contacts_header.to_string(self.lang)
         contacts_note = self.contacts_note.to_string(self.lang)
-        self.write_line(f"\\textbf{{\Large {contacts_header}}} \\footnotesize{{\\normalfont ({contacts_note})}}")
+        self.write_line(f"\\textbf{{\\Large {contacts_header}}} \\footnotesize{{\\normalfont ({contacts_note})}}")
         self.write_line(r"\vspace{0.75em}")
         self.write_line(r"\hrule")
         self.write_line(r"\leftskip0.7cm\relax")
@@ -863,8 +849,8 @@ me = Applicant(
                     ru="Создал пакетный менеджер для внутреннего использования",
                 ),
                 t(
-                    en="Increased code coverage to about 100\% in all projects",
-                    ru="Увеличил покрытие кода до приблизительно 100\% во всех проектах",
+                    en="Increased code coverage to about 100\\% in all projects",
+                    ru="Увеличил покрытие кода до приблизительно 100\\% во всех проектах",
                 ),
                 t(
                     en="Mentored trainees and taught them until they became our junior developers",
