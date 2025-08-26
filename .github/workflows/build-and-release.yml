@@ -1,0 +1,50 @@
+name: Build and Release CV
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy
+
+      - name: Set up TeX Live
+        uses: xu-cheng/texlive-action@v2
+        with:
+          scheme: full
+
+      - name: Test
+        run: |
+          make test
+
+      - name: Build
+        run: |
+          make build
+
+      - name: Get current date
+        id: date
+        run: echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "CV ${{ steps.date.outputs.TODAY }}"
+          tag_name: latest
+          body: "This is the latest CV, automatically built from the master branch"
+          overwrite: true
+          files: main.pdf
